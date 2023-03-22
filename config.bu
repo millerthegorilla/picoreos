@@ -1,0 +1,59 @@
+install and configure firewall-d
+install and configure fail2ban
+install motion.conf
+copy image_build to motion_user home
+
+---
+ignition:
+  version: 3.3.0
+passwd:
+  users:
+  - name: core
+    sshAuthorizedKeys:
+    - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINoxUCnyind0cAE1bwFDua8z6LTwkUadoyZXp3vQFCvj
+      jamesstewartmiller@gmail.com
+  - name: motion_user
+    sshAuthorizedKeys:
+    - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINoxUCnyind0cAE1bwFDua8z6LTwkUadoyZXp3vQFCvj
+      jamesstewartmiller@gmail.com
+systemd:
+  units:
+  - name: selinux.service
+    enabled: true
+    contents: |-
+      [Service]
+      Type=oneshot
+      ExecStartPre=checkmodule -M -m -o /root/mypolicy.mod /root/mypolicy.te
+      ExecStartPre=semodule_package -o /root/mypolicy.pp -m /root/mypolicy.mod
+      ExecStart=semodule -i /root/mypolicy.pp && rpm-ostree install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm fail2ban v4l-utils audit
+
+      [Install]
+      WantedBy=multi-user.target
+storage:
+  directories:
+  - path: "/var/local/motion/files"
+    mode: '0640'
+  files:
+  - overwrite: true
+    path: "/root/mypolicy.te"
+    mode: 420
+    user:
+      name: root
+    contents:
+      source: https://gist.githubusercontent.com/millerthegorilla/1979332aa08eb8c98ec9083019933da8/raw/696f74bb60ab971cdd8a1beba8cf650505413bca/motion_policy.te
+      verification:
+        hash: 
+  - path: "/etc/systemd/system/motion.service"
+    contents:
+      source: https://gist.github.com/millerthegorilla/1e37450c79ca493d9b430815b4c18f70
+      verification:
+        hash: e597d5b083e0f7ea2f23f860e48a0d4417e88835079d51599278f1d9dcfc494f
+  - path: "/etc/default/motion"
+    contents:
+      inline: start_motion_daemon=yes
+  append:
+  - path: "/etc/selinux/targeted/file/file_contexts.local"
+    contents:
+      inline:
+        /var/local/motion/files(/.*)?    system_u:object_r:container_file_t:s0
+
