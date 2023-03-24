@@ -1,0 +1,19 @@
+# ansible-playbook --extra-vars='test_var="test!" bob_var="james"' file.ansible 
+
+install and configure fail2ban
+    - path: "/etc/fail2ban/fail2ban.conf"
+    overwrite: true
+    mode: 0640
+    contents:
+      source: https://gist.githubusercontent.com/millerthegorilla/2f4afb747ab38957bba7ec2783acab8c/raw/cae473cc2521e9c85f10356656b1dcc361a097f8/fail2ban.conf
+      verification:
+        hash: sha512-a70d26b79a939629d89289b87c2bbc1ed409ad330848a1961dcc9c05a8b1493774d2c40db05d1c11f8b4f41ee40c0de94b3ffe23b755d62566ce71f62a0196c3
+        
+install and configure firewall-d
+   rule family="ipv4" source address="192.168.200.5/24" accept
+podman pull python as motion_user
+podman create secret
+podman build custom image
+install motion.conf - templating image name from previous step
+
+

@@ -1,0 +1,8 @@
+---
+- name: Import sub playbooks
+  hosts: localhosts
+- import_playbook: coreos_config/templates/ansible_template.yaml
+# - import_playbook: coreos_config/provision.yaml
+# - name: pause until ready
+#   ansible.builtin.pause:
+#     prompt: "Now unmount"
