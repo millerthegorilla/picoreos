@@ -1,7 +1,10 @@
 ---
+- debug:
+    msg: "Templating files from vars.yaml:"
 - name: Template local files
   become: yes
   hosts: localhost
+  connection: local
   vars:
     user: "{{ lookup('env', 'USER') }}"
   vars_files:
@@ -12,8 +15,9 @@
         src: "{{ playbook_dir  }}/{{ item.src }}"
         dest: "{{ playbook_dir }}/{{ item.dest }}"
         mode: "{{ item.mode }}"
-        owner: "{{ item.owner }}"
+        owner: "{{ item.owner | default(user)}}"
+        group: "{{ item.group | default(user)}}"
       loop:
-        - { src: 'config.bu.j2', dest: '../provision/files/config.bu', mode: "0640", owner: "james" }
+        - { src: 'config.bu.j2', dest: '../provision/files/config.bu', mode: "0640" }
         - { src: 'provisioning.sh.j2', dest: '../provision/files/provisioning.sh', mode: "0540", owner: "root" }
     - debug: var=user

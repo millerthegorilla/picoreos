@@ -1,3 +1,10 @@
 ---
 motioncore_provision_disk: /dev/sda1,
 fail2ban_whitelist_ip: 127.0.0.1/8 192.168.200.5/24
+motion_core_ip: None
+packages:
+  - "motion"
+  - "fail2ban"
+  - "v4l-utils"
+  - "audit"
+# these packages are required.  Add extra packages to be installed above this line, as list members.

@@ -1,8 +1,28 @@
 ---
 - name: Import sub playbooks
-  hosts: localhosts
-- import_playbook: coreos_config/templates/ansible_template.yaml
-# - import_playbook: coreos_config/provision.yaml
-# - name: pause until ready
-#   ansible.builtin.pause:
-#     prompt: "Now unmount"
+  hosts: localhost
+  connection: local
+  vars:
+    env_path: './.env'
+    values:
+      - motion_user_ssh_authorized_key
+      # list more .env vars here
+  tasks:
+    - name: Read values from environment
+      ansible.builtin.shell: "source {{env_path}}; echo ${{item|upper}}"
+      register: output
+      with_items: "{{ values }}"
+      changed_when: false
+    - name: Store read value
+      ansible.builtin.set_fact:
+        "{{ item.0 }}": "{{ item.1.stdout }}"
+      when: '{{ item.0 }} is undefined'
+      with_together:
+        - "{{ values }}"
+        - "{{ output.results }}"
+      changed_when: false
+- ansible.builtin.import_playbook: coreos_config/templates/template.yaml
+- ansible.builtin.import_playbook: coreos_config/provision/provision.yaml
+- ansible.builtin.import_playbook: coreos_config/copy/copy.yaml
+- ansible.builtin.import_playbook: coreos_config/podman/podman.yaml
+    

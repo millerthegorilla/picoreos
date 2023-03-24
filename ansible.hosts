@@ -1,4 +1,0 @@
----
-motioncore:
-  hosts:
-    core1: {{ ANSIBLE_CORE1_IP_ADDRESS }}
