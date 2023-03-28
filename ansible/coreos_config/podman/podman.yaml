@@ -23,4 +23,4 @@
       containers.podman.podman_secret:
         state: present
         name: motion_secret
-        data: lookup('password', '/dev/null length=20')
+        data: "{{ lookup('password', '/dev/null length=32') }}"
