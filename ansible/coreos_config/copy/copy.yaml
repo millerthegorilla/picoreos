@@ -3,31 +3,24 @@
     msg: "Copying files to machine..."
 - name: Copy files to provisioned machine
   hosts: "{{ motioncore_ip }}"
+  become: yes
+  become_method: machinectl
   vars:
     image_build: "/var/home/motion_user/image_build"
   tasks:
-    - name: Make build directory in home folder
-      ansible.builtin.file:
-        path: "{{ image_build }}"
-        state: directory
-        mode: '0755'
-    - name: Create file template
+    - name: Copy files to remote machine
       copy:
         src: "{{ playbook_dir  }}/{{ item.src }}"
         dest: "{{ playbook_dir }}/{{ item.dest }}"
         mode: "{{ item.mode }}"
-        owner: "{{ item.owner }}"
-        #  test when: "{{ item.user }} is not undefined"
-        group: "{{ item.group }}"
-        serole:
-        seuser:
-        setype:
+        owner: "{{ item.owner if item.owner is defined else owner | default(omit) }}"
+        group: "{{ item.group if item.group is defined else group | default(omit) }}"
+        serole: "{{ item.serole if item.serole is defined else serole | default(omit) }}"
+        seuser: "{{ item.seuser if item.seuser is defined else seuser | default(omit) }}"
+        setype: "{{ item.setype if item.setype is defined else setype | default(omit) }}"
       loop:
         - { src: './files/fail2ban.conf', dest: '/etc/fail2ban/fail2ban.conf', mode: "0640", owner: root, group: root }
         - { src: '.files/sshd.conf', dest: '/etc/fail2ban/jail.local.d/sshd.conf', mode: "0540", owner: "root", group: "root" }
         - { src: '.files/motion.conf', dest: '/etc/motion/motion.conf', mode: "0540", owner: "root", group: "video" }
         - { src: '.files/image_build/Dockerfile', dest: '{{ image_build }}/Dockerfile', mode: "0540", owner: "root", group: "video" }
         - { src: '.files/image_build/motion_mail.py', dest: '{{ image_build }}/motion_mail.py', mode: "0540", owner: "root", group: "video" }
-
-      # set permissions, owner and selinux on files
-

@@ -1,0 +1,26 @@
+---
+- name: Podman provisioning
+  hosts: {{ motioncore_ip }}
+  become: yes
+  become_method: machinectl
+  become_user: motion_user
+  vars_files:
+    "{{ playbook_dir }}/../../vars.yaml"
+  tasks:
+    - name: Pull Python Image
+      containers.podman.podman_image:
+        name: docker.io/library/python
+        state: present
+    - name: Build Custom Python Image
+      containers.podman.podman_image:
+        name: python
+        tag: motioncore
+        path: "{{ image_build }}"
+        state: present
+      register: build_output
+    - debug: var=build_output
+    - name: Create secret
+      containers.podman.podman_secret:
+        state: present
+        name: motion_secret
+        data: lookup('password', '/dev/null length=20')

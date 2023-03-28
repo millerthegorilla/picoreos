@@ -1,3 +1,5 @@
 checksumtest
 checksumtest/*
 .env
+motioncore_venv
+motioncore_venv/*
