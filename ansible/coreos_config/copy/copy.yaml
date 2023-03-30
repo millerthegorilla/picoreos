@@ -1,10 +1,9 @@
 ---
-- debug:
-    msg: "Copying files to machine..."
 - name: Copy files to provisioned machine
   hosts: "{{ motioncore_ip }}"
   become: yes
   become_method: machinectl
+  become_user: motion_user
   vars:
     image_build: "/var/home/motion_user/image_build"
   tasks:

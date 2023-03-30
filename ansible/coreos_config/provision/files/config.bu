@@ -1,0 +1,99 @@
+---
+variant: fcos
+version: 1.5.0
+passwd:
+  users:
+    - name: core
+      ssh_authorized_keys:
+        - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINoxUCnyind0cAE1bwFDua8z6LTwkUadoyZXp3vQFCvj jamesstewartmiller@gmail.com
+    - name: motion_user
+      ssh_authorized_keys:
+        - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINoxUCnyind0cAE1bwFDua8z6LTwkUadoyZXp3vQFCvj jamesstewartmiller@gmail.com
+      groups:
+        - video
+systemd:
+  units:
+    - name: selinux.service
+      enabled: true
+      contents: >-
+        [Service]
+
+        Type=oneshot
+
+        # ExecStartPre=checkmodule -M -m -o /root/mypolicy.mod /root/mypolicy.te
+
+        # ExecStartPre=semodule_package -o /root/mypolicy.pp -m /root/mypolicy.mod
+
+        # ExecStart=semodule -i /root/mypolicy.pp
+
+        ExecStart=rpm-ostree install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm \
+
+        -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm \
+
+        -E %fedora).noarch.rpm
+
+        [Install]
+
+        WantedBy=multi-user.target
+storage:
+  directories:
+    - path: /var/local/motion/files
+      mode: 0640
+    - path: /var/home/motion_user/image_build
+      mode: 0660
+  files:
+    - path: /etc/systemd/user/motion.service
+      mode: 0644
+      user:
+        name: "root"
+      group:
+        name: "root"
+      contents:
+        source: https://gist.githubusercontent.com/millerthegorilla/1e37450c79ca493d9b430815b4c18f70/raw/b6f16a775dff2673fc67b4a9f9e8d963af1ac801/motion.service
+        verification:
+          hash: sha512-bbd76742556e7cac491cfe8e9caee0e4cfacfe5b3beb19853e6f7d2274fc2370ca52da5c58c9499dd7317e23862b5498082eb4a5284edf57f4124535ddadf853
+    - path: /var/home/motion_user/image_build/motion_mail.py
+      mode: 0644
+      user:
+        name: "root"
+      group:
+        name: "root"
+      contents:
+        source: https://gist.githubusercontent.com/millerthegorilla/d45b7e9c464353678ef5f3db107931cc/raw/e981a68fd53736527124ca6c69931615315ee540/motion_mail.py
+        verification:
+          hash: sha512-16cd6fabcebf6877491a905119b7a161772cb905bd653cd9c7545c375a24ef25fc10456a4ea2a461904b096c5a26b07e120602673c10b64727d09ee50bb7b072
+    - path: /var/home/motion_user/image_build/Dockerfile
+      mode: 0640
+      user:
+        name: "root"
+      group:
+        name: "root"
+      contents:
+        source: https://gist.githubusercontent.com/millerthegorilla/a4c1cddf27b0d2c986558c265f95fd3a/raw/2a48e237c8d66bf5b4516d1148f7076cba05c55e/Dockerfile.py
+        verification:
+          hash: sha512-240b3fe9c8221902b09a082fd5874c298f50372b6bae4fdc1139b5b3c39abde1502f398018475987589078badeff26ec6857501255969d76968b61c23863f5f6
+    - path: /var/home/motion_user/fail2ban.conf
+      mode: 0640
+      contents:
+        source: https://gist.githubusercontent.com/millerthegorilla/2f4afb747ab38957bba7ec2783acab8c/raw/cae473cc2521e9c85f10356656b1dcc361a097f8/fail2ban.conf
+        verification:
+          hash: sha512-a70d26b79a939629d89289b87c2bbc1ed409ad330848a1961dcc9c05a8b1493774d2c40db05d1c11f8b4f41ee40c0de94b3ffe23b755d62566ce71f62a0196c3
+    - path: /etc/default/motion
+      user:
+        name: "root"
+      group:
+        name: "root"
+      mode: 0644
+      contents:
+        inline: start_motion_daemon=yes
+    - path: /var/home/motion_user/sshd.conf
+      contents:
+        inline: |
+          [sshd]
+          enabled   = true
+          filter    = sshd
+          backend   = systemd
+          maxretry  = 5
+          findtime  = 1d
+          bantime   = 2w
+          ignoreip  = 127.0.0.1/8 192.168.200.5/24

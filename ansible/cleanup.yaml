@@ -1,0 +1,38 @@
+---
+- name: Cleanup temp files
+  hosts:
+    localhost
+  connection:
+    local
+  become: yes
+  # become_user: root
+  # become_method: sudo
+  tasks:
+    - name: Remove templated files
+      ansible.builtin.file:
+         path: "./coreos_config/provision/files/{{ item }}"
+         state: absent
+      loop:
+        - config.ign
+        - config.bu
+        - provisioning.sh
+    - name: Find coreos-installer if exists
+      ansible.builtin.find:
+        path: /tmp/
+        recurse: false
+        patterns: 'coreos-installer*'
+        file_type: directory
+      register: find_output
+    - name: Remove coreos-installer if exists
+      ansible.builtin.file:
+        path: "{{ find_output.files[0].path }}"
+        state: absent
+      when: find_output.files
+    - name: Unmount /tmp/FCOSEFIpart if mounted
+      ansible.posix.mount:
+        path: /tmp/FCOSEFIpart
+        state: unmounted
+    - name: Remove /tmp/FCOSEFIpart if exists
+      ansible.builtin.file:
+        path: /tmp/FCOSEFIpart
+        state: absent

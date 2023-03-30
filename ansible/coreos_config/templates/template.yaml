@@ -1,10 +1,10 @@
 ---
-- debug:
-    msg: "Templating files from vars.yaml:"
 - name: Template local files
-  become: yes
   hosts: localhost
   connection: local
+  become: yes
+  become_method: sudo
+  become_user: root
   vars:
     user: "{{ lookup('env', 'USER') }}"
   vars_files:
@@ -18,6 +18,14 @@
         owner: "{{ item.owner | default(user)}}"
         group: "{{ item.group | default(user)}}"
       loop:
-        - { src: 'config.bu.j2', dest: '../provision/files/config.bu', mode: "0640" }
-        - { src: 'provisioning.sh.j2', dest: '../provision/files/provisioning.sh', mode: "0540", owner: "root" }
+        - { src: './files/config.bu.j2', dest: '../provision/files/config.bu', mode: "0640" }
+        - { src: './files/provisioning.sh.j2', dest: '../provision/files/provisioning.sh', mode: "0550" }
     - debug: var=user
+    # - name: Change file owner
+    #   ansible.builtin.file:
+    #     path: '../provision/files/provisioning.sh'
+    #     owner: root
+    #     group: root
+    #     state: file
+    #   register: out
+    # - debug: var=out

@@ -1,7 +1,9 @@
 #!/bin/bash
 
+set -e
+[[ -d /tmp/FCOSEFIpart ]] && rm -rf /tmp/FCOSEFIpart
 FCOSDISK={{ motioncore_provision_disk }}
-sudo coreos-installer install --architecture=aarch64 -i config.ign $FCOSDISK
+sudo coreos-installer install --architecture=aarch64 -i ./files/config.ign $FCOSDISK
 
 FCOSEFIPARTITION=$(lsblk $FCOSDISK -J -oLABEL,PATH  | jq -r '.blockdevices[] | select(.label == "EFI-SYSTEM")'.path)
 mkdir /tmp/FCOSEFIpart
@@ -12,4 +14,6 @@ sudo curl -LO https://github.com/pftf/RPi4/releases/download/${VERSION}/RPi4_UEF
 sudo unzip RPi4_UEFI_Firmware_${VERSION}.zip
 sudo rm RPi4_UEFI_Firmware_${VERSION}.zip
 popd
-sudo umount /tmp/FCOSEFIpart
+sudo umount $FCOSEFIPARTITION
+find /tmp/ -name "coreos-installer*" -maxdepth 1 -type=d exec sudo rm -rf {} +
+[[ -d /tmp/FCOSEFIpart ]] && sudo rm -rf /tmp/FCOSEFIpart

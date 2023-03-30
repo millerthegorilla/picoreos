@@ -21,8 +21,10 @@
         - "{{ values }}"
         - "{{ output.results }}"
       changed_when: false
+- ansible.builtin.import_playbook: ./cleanup.yaml
 - ansible.builtin.import_playbook: coreos_config/templates/template.yaml
-- ansible.builtin.import_playbook: coreos_config/provision/provision.yaml
-- ansible.builtin.import_playbook: coreos_config/copy/copy.yaml
-- ansible.builtin.import_playbook: coreos_config/podman/podman.yaml
+- ansible.builtin.import_playbook: coreos_config/provision/provision1.yaml
+# - ansible.builtin.import_playbook: coreos_config/provision/provision2.yaml
+# - ansible.builtin.import_playbook: coreos_config/copy/copy.yaml
+# - ansible.builtin.import_playbook: coreos_config/podman/podman.yaml
     

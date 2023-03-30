@@ -1,6 +1,6 @@
 ---
 - name: Podman provisioning
-  hosts: {{ motioncore_ip }}
+  hosts: "{{ motioncore_ip }}"
   become: yes
   become_method: machinectl
   become_user: motion_user

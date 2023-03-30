@@ -1,0 +1,14 @@
+---
+- name: Provision remote machine
+  hosts: {{ motioncore_ip }}
+  tasks:
+    - name: Install packages on remote machine
+      community.general.rpm_ostree_pkg:
+        name: "{{ packages }}"
+        state: present
+    - name: Set selinux on file
+      community.general.sefcontext:
+        target: /var/local/motion/files(/.*)?
+        setype: container_file_t
+        seuser: system_u
+        state: present
