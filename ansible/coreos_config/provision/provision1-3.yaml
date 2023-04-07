@@ -1,0 +1,12 @@
+---
+- name: Install firmware
+  hosts: localhost
+  connection: local
+  vars_files:
+    "{{ playbook_dir }}/../../vars.yaml"
+  tasks:
+    - name: Install firmware
+      ansible.builtin.shell: 
+        cmd: ./files/provision_firmware.sh {{ motioncore_provision_disk }}
+      register: install_out
+    - debug: var=install_out

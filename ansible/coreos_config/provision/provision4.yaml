@@ -1,0 +1,31 @@
+---
+- name: Provision 4 - install packages and reboot
+  hosts: motioncore
+  remote_user: core
+  become: yes
+  become_user: root
+  become_method: sudo
+  vars_files:
+    "{{ playbook_dir }}/../../vars.yaml"
+  tasks:
+    - name: Install packages on remote machine
+      community.general.rpm_ostree_pkg:
+        name: "{{ packages }}"
+        state: present
+    - name: Add motion_user
+      ansible.builtin.user:
+        name: motion_user
+        group: motion_user
+        groups: video
+        append: yes
+    - name: Enable lingering for motion_user
+      ansible.builtin.shell:
+          cmd: loginctl enable-linger motion_user
+    - name: Reboot host and wait for it to restart
+      ansible.builtin.reboot:
+        msg: "Reboot initiated by Ansible"
+        connect_timeout: 5
+        reboot_timeout: 600
+        pre_reboot_delay: 0
+        post_reboot_delay: 30
+        test_command: whoami

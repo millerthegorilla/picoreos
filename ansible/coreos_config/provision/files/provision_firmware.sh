@@ -4,13 +4,8 @@ is_mounted() {
     mount | awk -v DIR="$1" '{if ($3 == DIR) { exit 0}} ENDFILE{exit -1}'
 }
 
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-
-[[ -d /tmp/FCOSEFIpart ]] && rm -rf /tmp/FCOSEFIpart
-FCOSDISK=/dev/sda
-sudo coreos-installer install --architecture=aarch64 -i ${SCRIPT_DIR}/config.ign ${FCOSDISK}
-
-FCOSEFIPARTITION=$(lsblk $FCOSDISK -J -oLABEL,PATH  | jq -r '.blockdevices[] | select(.label == "EFI-SYSTEM")'.path)
+sleep 5
+FCOSEFIPARTITION=$(lsblk ${1} -J -oLABEL,PATH  | jq -r '.blockdevices[] | select(.label == "EFI-SYSTEM")'.path)
 mkdir /tmp/FCOSEFIpart
 sudo mount $FCOSEFIPARTITION /tmp/FCOSEFIpart
 pushd /tmp/FCOSEFIpart
@@ -22,5 +17,5 @@ popd
 if is_mounted /tmp/FCOSEFIpart; then
     sudo umount /tmp/FCOSEFIpart
 fi
-find /tmp/ -name "coreos-installer*" -maxdepth 1 -type=d exec sudo rm -rf {} +
+find /tmp/ -name "coreos-installer*" -maxdepth 1 -type d -exec sudo rm -rf {} +
 [[ -d /tmp/FCOSEFIpart ]] && sudo rm -rf /tmp/FCOSEFIpart

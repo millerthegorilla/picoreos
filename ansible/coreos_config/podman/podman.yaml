@@ -1,9 +1,7 @@
 ---
 - name: Podman provisioning
-  hosts: "{{ motioncore_ip }}"
-  become: yes
-  become_method: machinectl
-  become_user: motion_user
+  hosts: motioncore
+  remote_user: motion_user
   vars_files:
     "{{ playbook_dir }}/../../vars.yaml"
   tasks:

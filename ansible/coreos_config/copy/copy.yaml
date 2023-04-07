@@ -1,16 +1,34 @@
 ---
 - name: Copy files to provisioned machine
-  hosts: "{{ motioncore_ip }}"
+  hosts: all
+  remote_user: core
   become: yes
-  become_method: machinectl
-  become_user: motion_user
+  become_user: root
+  become_method: sudo
   vars:
     image_build: "/var/home/motion_user/image_build"
   tasks:
+    - name: Create directories
+      ansible.builtin.copy:
+        path: "{{ item.path }}"
+        state: directory
+        owner: "{{ item.owner }}"
+        group: "{{ item.group }}"
+        mode: "{{ item.mode }}"
+        setype: "{{ item.setype if item.setype is defined else setype | default(omit) }}"
+      loop:
+        - { path: "/var/local/motion/files", mode: "0770", owner: "root", group: "video", setype: "container_file_t"}
+        - { path: "/var/home/motion_user/image_build", mode: "0777", owner: "motion_user", group: "motion_user"}
+    - name: Set selinux on file
+      community.general.sefcontext:
+        target: /var/local/motion/files(/.*)?
+        setype: container_file_t
+        seuser: system_u
+        state: present
     - name: Copy files to remote machine
-      copy:
-        src: "{{ playbook_dir  }}/{{ item.src }}"
-        dest: "{{ playbook_dir }}/{{ item.dest }}"
+      ansible.builtin.copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
         mode: "{{ item.mode }}"
         owner: "{{ item.owner if item.owner is defined else owner | default(omit) }}"
         group: "{{ item.group if item.group is defined else group | default(omit) }}"
@@ -18,8 +36,9 @@
         seuser: "{{ item.seuser if item.seuser is defined else seuser | default(omit) }}"
         setype: "{{ item.setype if item.setype is defined else setype | default(omit) }}"
       loop:
-        - { src: './files/fail2ban.conf', dest: '/etc/fail2ban/fail2ban.conf', mode: "0640", owner: root, group: root }
-        - { src: '.files/sshd.conf', dest: '/etc/fail2ban/jail.local.d/sshd.conf', mode: "0540", owner: "root", group: "root" }
-        - { src: '.files/motion.conf', dest: '/etc/motion/motion.conf', mode: "0540", owner: "root", group: "video" }
-        - { src: '.files/image_build/Dockerfile', dest: '{{ image_build }}/Dockerfile', mode: "0540", owner: "root", group: "video" }
-        - { src: '.files/image_build/motion_mail.py', dest: '{{ image_build }}/motion_mail.py', mode: "0540", owner: "root", group: "video" }
+        - { src: '{{ playbook_dir }}/files/fail2ban.conf', dest: '/etc/fail2ban/fail2ban.conf', mode: "0640", owner: root, group: root }
+        - { src: '{{ playbook_dir }}/files/sshd.conf', dest: '/etc/fail2ban/jail.local.d/sshd.conf', mode: "0640", owner: "root", group: "root" }
+        - { src: '{{ playbook_dir }}/files/motion.conf', dest: '/etc/motion/motion.conf', mode: "0640", owner: "root", group: "video" }
+        - { src: '{{ playbook_dir }}/files/motion.service', dest: '/etc/systemd/user/motion.service', mode: "0644", owner: "root", group: "root" }
+        - { src: '{{ playbook_dir }}/files/image_build/Dockerfile', dest: '{{ image_build }}/Dockerfile', mode: "0640", owner: "motion_user", group: "video" }
+        - { src: '{{ playbook_dir }}/files/image_build/motion_mail.py', dest: '{{ image_build }}/motion_mail.py', mode: "0640", owner: "motion_user", group: "video" }

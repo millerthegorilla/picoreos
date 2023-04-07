@@ -1,0 +1,21 @@
+---
+- name: Provision 1 - transpile and install on sdcard
+  hosts: localhost
+  connection: local
+  vars_files:
+    "{{ playbook_dir }}/../../vars.yaml"
+  become: yes
+  become_method: sudo
+  tasks:
+    - name: Install image - takes a long time! (circa 3.5 mins)
+      ansible.builtin.shell: 
+        cmd: >- 
+          sudo podman run --pull=always
+          --privileged --rm -v /dev:/dev
+          -v /run/udev:/run/udev
+          -v .:/data -w /data quay.io/coreos/coreos-installer:release
+          install {{ motioncore_provision_disk }}
+          --architecture aarch64
+          -s stable
+          -i ./files/config.ign
+      when: "'coreos-installer' not in local_pkgs.ansible_facts.packages"

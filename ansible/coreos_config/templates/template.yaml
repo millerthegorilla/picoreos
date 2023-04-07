@@ -18,8 +18,8 @@
         owner: "{{ item.owner | default(user)}}"
         group: "{{ item.group | default(user)}}"
       loop:
-        - { src: './files/config.bu.j2', dest: '../provision/files/config.bu', mode: "0640" }
-        - { src: './files/provisioning.sh.j2', dest: '../provision/files/provisioning.sh', mode: "0550" }
+        - { src: 'files/config.bu.j2', dest: '../provision/files/config.bu', mode: "0640" }
+        - { src: 'files/provision_image.sh.j2', dest: '../provision/files/provision_image.sh', mode: "0550" }
     - debug: var=user
     # - name: Change file owner
     #   ansible.builtin.file:

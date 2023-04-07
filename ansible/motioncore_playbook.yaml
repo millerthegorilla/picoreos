@@ -21,10 +21,44 @@
         - "{{ values }}"
         - "{{ output.results }}"
       changed_when: false
-- ansible.builtin.import_playbook: ./cleanup.yaml
-- ansible.builtin.import_playbook: coreos_config/templates/template.yaml
-- ansible.builtin.import_playbook: coreos_config/provision/provision1.yaml
+    - name: Get local packages for later conditional test for coreos-installer
+      ansible.builtin.package_facts:
+        manager: auto
+      register: local_pkgs
+    - name: set pkg fact
+      ansible.builtin.set_fact:
+        local_pkgs: "{{ local_pkgs }}"
+# # cleanup previous or broken attempts
+# - ansible.builtin.import_playbook: ./cleanup.yaml
+
+# # template the ignition file and the script
+# - ansible.builtin.import_playbook: coreos_config/templates/template.yaml
+
+# # transpile config.bu to config.ign
+# - ansible.builtin.import_playbook: coreos_config/provision/provision1.yaml
+
+# # run script to install coreos to microsd card
+# # if coreos-installer is installed (fedora only)
+# - ansible.builtin.import_playbook: coreos_config/provision/provision1-1.yaml
+
+# # install coreos to microsd card using container
+# # (other distros ie when coreos-installer is not installed)
+# - ansible.builtin.import_playbook: coreos_config/provision/provision1-2.yaml
+
+# # install firmware to microsd card
+# - ansible.builtin.import_playbook: coreos_config/provision/provision1-3.yaml
+
+# obtain ip address of remote host from user and set fact
 # - ansible.builtin.import_playbook: coreos_config/provision/provision2.yaml
-# - ansible.builtin.import_playbook: coreos_config/copy/copy.yaml
-# - ansible.builtin.import_playbook: coreos_config/podman/podman.yaml
-    
+
+# # install rpm-fusion repo and reboot
+# - ansible.builtin.import_playbook: coreos_config/provision/provision3.yaml
+
+# install packages and reboot
+# - ansible.builtin.import_playbook: coreos_config/provision/provision4.yaml
+
+# copy configuration files
+- ansible.builtin.import_playbook: coreos_config/copy/copy.yaml
+
+# setup podman
+- ansible.builtin.import_playbook: coreos_config/podman/podman.yaml

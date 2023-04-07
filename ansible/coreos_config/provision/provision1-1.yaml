@@ -1,0 +1,12 @@
+---
+- name: Provision 1-1 - install to sdcard if coreos-installer present
+  hosts: localhost
+  connection: local
+  become: yes
+  become_method: sudo
+  tasks:
+    - name: Running shell script to provision micro-sd card - takes a long time! (C. 3.5 mins)
+      ansible.builtin.shell:
+        cmd: "{{ playbook_dir }}/files/provision_image.sh"
+        executable: "/bin/bash"
+      when: "'coreos-installer' in local_pkgs.ansible_facts.packages"

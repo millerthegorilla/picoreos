@@ -1,26 +1,10 @@
 ---
-- name: Provision the micro-sd card
+- name: Provision 1 - transpile to config.ign
   hosts: localhost
   connection: local
-  become: yes
-  become_method: sudo
   vars_files:
     "{{ playbook_dir }}/../../vars.yaml"
   tasks:
     - name: transpile config.bu into config.ign
       ansible.builtin.shell:
-        cmd: podman run --rm --interactive=True quay.io/coreos/butane:release --pretty --strict < files/config.bu > files/config.ign
-    - name: Running shell script to provision micro-sd card - takes a long time!
-      ansible.builtin.shell:
-        cmd: ./files/provisioning.sh
-        executable: "/bin/bash"
-    - name: Pause until ready
-      ansible.builtin.pause:
-        prompt: |
-          "Microsd should be ready, resize root partition"
-          "and/or place microsd in pi and boot. Input ip"
-          "address of core machine, once it has finished booting."
-        register: command_output
-    - name: Set Ip of remote machine
-      ansible.builtin.set_fact: 
-        motioncore_ip: "{{ command_output.user_input }}" 
+        cmd: podman run --rm --interactive=True -v {{ playbook_dir }}/../../files:/files:Z quay.io/coreos/butane:release --files-dir /files --pretty --strict < files/config.bu > files/config.ign
