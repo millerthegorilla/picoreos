@@ -1,0 +1,43 @@
+---
+- block:
+    - name: Create directories
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: directory
+        owner: "{{ item.owner }}"
+        group: "{{ item.group }}"
+        mode: "{{ item.mode }}"
+        setype: "{{ item.setype if item.setype is defined else setype | default(omit) }}"
+      loop:
+        - { path: "/var/local/motion/files", mode: "0770", owner: "motion_user", group: "video", setype: "container_file_t"}
+        - { path: "/var/home/motion_user/image_build", mode: "0777", owner: "motion_user", group: "motion_user"}
+      delegate_to: "{{ motioncore_ip }}"
+    - name: Set selinux on file
+      community.general.sefcontext:
+        target: /var/local/motion/files(/.*)?
+        setype: container_file_t
+        seuser: system_u
+        state: present
+      delegate_to: "{{ motioncore_ip }}"
+    - name: Copy files to remote machine
+      ansible.builtin.copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        mode: "{{ item.mode }}"
+        owner: "{{ item.owner if item.owner is defined else owner | default(omit) }}"
+        group: "{{ item.group if item.group is defined else group | default(omit) }}"
+        serole: "{{ item.serole if item.serole is defined else serole | default(omit) }}"
+        seuser: "{{ item.seuser if item.seuser is defined else seuser | default(omit) }}"
+        setype: "{{ item.setype if item.setype is defined else setype | default(omit) }}"
+      loop:
+        - { src: '{{ role_path }}/files/fail2ban.conf', dest: '/etc/fail2ban/fail2ban.conf', mode: "0640", owner: root, group: root }
+        - { src: '{{ role_path }}/files/templated/sshd.conf', dest: '/etc/fail2ban/jail.d/sshd.conf', mode: "0640", owner: "root", group: "root" }
+        - { src: '{{ role_path }}/files/motion.conf', dest: '/etc/motion/motion.conf', mode: "0640", owner: "root", group: "video" }
+        - { src: '{{ role_path }}/files/custom_motion.service', dest: '/etc/systemd/user/custom_motion.service', mode: "0644", owner: "root", group: "root" }
+        - { src: '{{ role_path }}/files/Dockerfile', dest: '{{ image_build }}/Dockerfile', mode: "0640", owner: "motion_user", group: "video" }
+        - { src: '{{ role_path }}/files/motion_mail.py', dest: '{{ image_build }}/motion_mail.py', mode: "0640", owner: "motion_user", group: "video" }
+      delegate_to: "{{ motioncore_ip }}"
+  remote_user: core
+  become: true
+  become_user: root
+  become_method: sudo

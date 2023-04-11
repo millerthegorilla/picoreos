@@ -1,0 +1,29 @@
+- name: Get local packages for later conditional test for coreos-installer
+  ansible.builtin.package_facts:
+    manager: auto
+  register: local_pkgs
+- name: set pkg fact
+  ansible.builtin.set_fact:
+    local_pkgs: "{{ local_pkgs }}"
+    cacheable: true
+  # cleanup temp files etc
+# - name: Cleanup before beginning
+#   command: echo "this task will cleanup tempfiles"
+#   notify: "cleanup_handler"
+  # templates
+# - name: Complete templates
+#   ansible.builtin.include_tasks:
+#     file: template.yaml
+  # Provision the microsd card and setup the machine
+- name: Provision machine
+  ansible.builtin.import_tasks: provision.yaml
+  # copy configuration files
+- name: Copy files to remote machine
+  ansible.builtin.import_tasks: copy.yaml
+  # setup podman
+- name: Setup podman
+  ansible.builtin.import_tasks: podman.yaml
+  delegate_to: "{{ motioncore_ip }}"
+- name: Start services
+  ansible.builtin.import_tasks: run.yaml
+  delegate_to: "{{ motioncore_ip }}"

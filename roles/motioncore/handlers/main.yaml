@@ -1,0 +1,4 @@
+- name: Cleanup Temporary Files
+  ansible.builtin.include_tasks:
+    file: cleanup.yaml
+  listen: "cleanup_handler"    

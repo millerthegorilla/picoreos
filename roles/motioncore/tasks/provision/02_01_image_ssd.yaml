@@ -1,0 +1,4 @@
+- name: Running shell script to provision micro-sd card - takes a long time! (C. 3.5 mins)
+  ansible.builtin.shell:
+    cmd: "{{ role_path }}/files/templated/provision_image.sh"
+    executable: "/bin/bash"

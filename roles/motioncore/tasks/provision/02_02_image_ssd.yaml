@@ -1,0 +1,11 @@
+- name: Install image - takes a long time! (circa 3.5 mins)
+  ansible.builtin.shell: 
+    cmd: >- 
+      sudo podman run --pull=always
+      --privileged --rm -v /dev:/dev
+      -v /run/udev:/run/udev
+      -v .:/data -w /data quay.io/coreos/coreos-installer:release
+      install {{ motioncore_provision_disk }}
+      --architecture aarch64
+      -s stable
+      -i ./files/config.ign

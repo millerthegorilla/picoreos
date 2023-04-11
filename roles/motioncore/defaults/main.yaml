@@ -1,0 +1,9 @@
+---
+motioncore_provision_disk: /dev/sda
+image_build: /var/home/motion_user/image_build
+motioncore_pkgs:
+  - motion
+  - fail2ban
+  - v4l-utils
+  - audit
+# these packages are required.  Add extra packages to be installed above this line, as list members.

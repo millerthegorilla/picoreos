@@ -1,0 +1,6 @@
+- name: transpile config.bu into config.ign
+  ansible.builtin.shell:
+    cmd: >-
+      podman run --rm --interactive=True -v "{{ role_path }}"/files/templated:/files:Z 
+      quay.io/coreos/butane:release --files-dir /files 
+      --pretty --strict < "{{ role_path }}/files/templated/config.bu" > "{{ role_path }}/files/templated/config.ign"

@@ -1,0 +1,29 @@
+- name: Remove templated files
+  ansible.builtin.file:
+      path: "{{ role_path }}/files/templated/{{ item }}"
+      state: absent
+  loop:
+    - config.ign
+    - config.bu
+    - provision_image.sh
+    - sshd.conf
+- name: Find coreos-installer dir if exists
+  ansible.builtin.find:
+    path: /tmp/
+    recurse: false
+    patterns: 'coreos-installer*'
+    file_type: directory
+  register: find_output
+- name: Remove coreos-installer dir if exists
+  ansible.builtin.file:
+    path: "{{ find_output.files[0].path }}"
+    state: absent
+  when: find_output.files
+- name: Unmount /tmp/FCOSEFIpart if mounted
+  ansible.posix.mount:
+    path: /tmp/FCOSEFIpart
+    state: unmounted
+- name: Remove /tmp/FCOSEFIpart if exists
+  ansible.builtin.file:
+    path: /tmp/FCOSEFIpart
+    state: absent

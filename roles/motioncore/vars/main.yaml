@@ -1,0 +1,2 @@
+motion_user_ssh_authorized_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINoxUCnyind0cAE1bwFDua8z6LTwkUadoyZXp3vQFCvj jamesstewartmiller@gmail.com"
+fail2ban_whitelist_ip: 127.0.0.1/8 192.168.200.5/24

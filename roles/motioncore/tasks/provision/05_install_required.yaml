@@ -1,0 +1,7 @@
+- name: >-
+   Install needed packages using the raw module
+   *Takes a long time! (rpm-ostree install)*
+  ansible.builtin.raw: >-
+    test -e /usr/bin/python || sudo rpm-ostree install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-37.noarch.rpm 
+    python python3-libselinux && sudo reboot
+  delegate_to: "{{ motioncore_ip }}"

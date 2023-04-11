@@ -1,0 +1,29 @@
+---
+- block:
+   - name: Mask motion.service
+     ansible.builtin.systemd:
+       name: motion.service
+       masked: true
+       enabled: false
+       state: stopped
+   - name: Start fail2ban.service
+     ansible.builtin.service:
+       name: fail2ban.service
+       enabled: true
+       state: started
+       scope: system
+  remote_user: core
+  become: true
+  become_user: root
+  become_method: sudo
+- block:
+    - name: Start motion.service
+      ansible.builtin.systemd:
+        name: custom_motion
+        enabled: true
+        state: started
+        scope: user
+  remote_user: core
+  become: true
+  become_user: motion_user
+  become_method: sudo

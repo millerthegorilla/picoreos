@@ -1,0 +1,16 @@
+---
+###   set grub password and luks encryption
+variant: fcos
+version: 1.5.0
+ignition:
+  timeouts:
+    http_total: 360
+passwd:
+  users:
+    - name: core
+      ssh_authorized_keys:
+        - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINoxUCnyind0cAE1bwFDua8z6LTwkUadoyZXp3vQFCvj jamesstewartmiller@gmail.com"
+storage:
+  links:
+    - path: /etc/localtime
+      target: ../usr/share/zoneinfo/Europe/Jersey

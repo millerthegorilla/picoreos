@@ -1,0 +1,6 @@
+---
+- name: Install firmware
+  ansible.builtin.shell: 
+    cmd: "{{ role_path }}/files/provision_firmware.sh {{ motioncore_provision_disk }}"
+  register: install_out
+- debug: var=install_out
