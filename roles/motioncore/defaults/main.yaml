@@ -1,5 +1,12 @@
 ---
-motioncore_provision_disk: /dev/sda
+env_path: "{{ playbook_dir }}/.env"
+env_values:
+  - motion_email_pass
+  - motion_email_username
+  - motion_email_port
+  - motion_email_host 
+  - motion_email_sender
+  - motion_email_receiver
 image_build: /var/home/motion_user/image_build
 motioncore_pkgs:
   - motion

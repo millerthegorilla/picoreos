@@ -6,7 +6,6 @@
     - config.ign
     - config.bu
     - provision_image.sh
-    - sshd.conf
 - name: Find coreos-installer dir if exists
   ansible.builtin.find:
     path: /tmp/

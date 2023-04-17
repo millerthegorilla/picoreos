@@ -1,0 +1,3 @@
+rpi4_coreos_user_ssh_authorized_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINoxUCnyind0cAE1bwFDua8z6LTwkUadoyZXp3vQFCvj jamesstewartmiller@gmail.com"
+rpi4_coreos_ip: 192.168.200.12
+rpi4_coreos_provision_disk: /dev/sda

@@ -3,5 +3,5 @@
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 [[ -d /tmp/FCOSEFIpart ]] && rm -rf /tmp/FCOSEFIpart
-FCOSDISK={{ motioncore_provision_disk }}
+FCOSDISK={{ rpi4_coreos_provision_disk }}
 sudo coreos-installer install --architecture=aarch64 -s stable -i ${SCRIPT_DIR}/config.ign $FCOSDISK

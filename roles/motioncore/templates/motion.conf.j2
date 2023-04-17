@@ -28,7 +28,7 @@ log_file /var/log/motion.log
 log_level 7
 
 # Target directory for pictures, snapshots and movies
-target_dir /var/lib/motion/files
+target_dir /var/home/motion_user/files/
 
 # Video device (e.g. /dev/video0) to be used for capturing.
 video_device /dev/video0
@@ -108,7 +108,7 @@ post_capture 0
 ; on_event_end value
 
 # Command to be executed when a movie file is closed.
-/usr/bin/podman run -it --name python_motion -v /var/local/motion/files:/var/local/motion/files -e MOTION_FILEPATH="%f" --secret motion_secret,type=env,target=MOTION_PASS localhost/motion_custom_image:latest && /usr/bin/podman rm python_motion &>> /var/log/motion.log
+on_movie_end /bin/bash /var/home/motion_user/motionmail.sh %f
 ############################################################
 # Picture output configuration parameters
 ############################################################
@@ -127,7 +127,7 @@ picture_filename %Y%m%d%H%M%S-%q
 movie_output on
 
 # Maximum length of movie in seconds.
-movie_max_time 60
+movie_max_time 10
 
 # The encoding quality of the movie. (0=use bitrate. 1=worst quality, 100=best)
 movie_quality 45

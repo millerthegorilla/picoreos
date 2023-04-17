@@ -9,16 +9,25 @@
         mode: "{{ item.mode }}"
         setype: "{{ item.setype if item.setype is defined else setype | default(omit) }}"
       loop:
-        - { path: "/var/local/motion/files", mode: "0770", owner: "motion_user", group: "video", setype: "container_file_t"}
-        - { path: "/var/home/motion_user/image_build", mode: "0777", owner: "motion_user", group: "motion_user"}
-      delegate_to: "{{ motioncore_ip }}"
+        - { path: "/var/home/motion_user/files", mode: "0750", owner: "motion_user", group: "motion_user", setype: "container_file_t"}
+        - { path: "/var/home/motion_user/image_build", mode: "0750", owner: "motion_user", group: "motion_user"}
+        - { path: "/var/home/motion_user/.config/systemd", mode: "0750", owner: "motion_user", group: "motion_user"}
+      delegate_to: "{{ rpi4_coreos_ip }}"
     - name: Set selinux on file
       community.general.sefcontext:
-        target: /var/local/motion/files(/.*)?
+        target: /var/home/motion_user/files(/.*)?
         setype: container_file_t
-        seuser: system_u
+        seuser: unconfined_u
         state: present
-      delegate_to: "{{ motioncore_ip }}"
+      delegate_to: "{{ rpi4_coreos_ip }}"
+    - name: Set owner on motion.log
+      ansible.builtin.file:
+        path: /var/log/motion.log
+        state: touch
+        owner: motion
+        group: video
+        mode: "0660"
+      delegate_to: "{{ rpi4_coreos_ip }}"
     - name: Copy files to remote machine
       ansible.builtin.copy:
         src: "{{ item.src }}"
@@ -32,12 +41,12 @@
       loop:
         - { src: '{{ role_path }}/files/fail2ban.conf', dest: '/etc/fail2ban/fail2ban.conf', mode: "0640", owner: root, group: root }
         - { src: '{{ role_path }}/files/templated/sshd.conf', dest: '/etc/fail2ban/jail.d/sshd.conf', mode: "0640", owner: "root", group: "root" }
-        - { src: '{{ role_path }}/files/motion.conf', dest: '/etc/motion/motion.conf', mode: "0640", owner: "root", group: "video" }
-        - { src: '{{ role_path }}/files/custom_motion.service', dest: '/etc/systemd/user/custom_motion.service', mode: "0644", owner: "root", group: "root" }
-        - { src: '{{ role_path }}/files/Dockerfile', dest: '{{ image_build }}/Dockerfile', mode: "0640", owner: "motion_user", group: "video" }
-        - { src: '{{ role_path }}/files/motion_mail.py', dest: '{{ image_build }}/motion_mail.py', mode: "0640", owner: "motion_user", group: "video" }
-      delegate_to: "{{ motioncore_ip }}"
+        - { src: '{{ role_path }}/files/templated/motion.conf', dest: '/etc/motion/motion.conf', mode: "0640", owner: "root", group: "video" }
+        - { src: '{{ role_path }}/files/custom_motion.service', dest: '/var/home/motion_user/.config/systemd/user/custom_motion.service', mode: "0644", owner: "motion_user", group: "motion_user" }
+        - { src: '{{ role_path }}/files/motion_default', dest: '/etc/default/motion', mode: "0444", owner: "root", group: "root" }
+        - { src: '{{ role_path }}/files/Dockerfile', dest: '{{ image_build }}/Dockerfile', mode: "0400", owner: "motion_user", group: "motion_user" }
+        - { src: '{{ role_path }}/files/motion_mail.py', dest: '{{ image_build }}/motion_mail.py', mode: "0400", owner: "motion_user", group: "motion_user" }
+        - { src: '{{ role_path }}/files/motionmail.sh', dest: '/var/home/motion_user/motionmail.sh', mode: "0400", owner: "motion_user", group: "motion_user" }
+      delegate_to: "{{ rpi4_coreos_ip }}"
   remote_user: core
   become: true
-  become_user: root
-  become_method: sudo

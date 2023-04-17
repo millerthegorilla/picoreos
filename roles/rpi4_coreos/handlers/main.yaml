@@ -1,0 +1,8 @@
+- name: Cleanup Temporary Files
+  ansible.builtin.include_tasks:
+    file: cleanup.yaml
+    apply:
+      become: true
+      become_user: root
+  listen: "cleanup_handler" 
+  

@@ -1,0 +1,28 @@
+- name: Pause until ready
+  ansible.builtin.pause:
+    prompt: |
+      Microsd should be ready, resize root partition
+      and/or place microsd in pi and boot. Input ip
+      address of core machine, once it has finished booting.
+      Packages will then install and the machine will reboot
+      several times.
+  register: command_output
+  when: rpi4_coreos_ip is not defined or rpi4_coreos_ip == "" or rpi4_coreos_ip == None
+- name: Set Ip of remote machine
+  ansible.builtin.set_fact: 
+    rpi4_coreos_ip: "{{ command_output.user_input }}" 
+    cacheable: true
+  when: rpi4_coreos_ip is not defined or rpi4_coreos_ip == "" or rpi4_coreos_ip == None
+- name: Add host
+  ansible.builtin.add_host:
+    name: '{{ rpi4_coreos_ip }}'
+    group: "motioncore"
+- name: Remove host from known_hosts
+  ansible.builtin.shell:
+    cmd: ssh-keygen -R {{ rpi4_coreos_ip }}
+- name: Place microssd in pi and power up. Waiting for remote to boot...
+  ansible.builtin.wait_for:
+    host: "{{ rpi4_coreos_ip }}"
+    port: 22
+    state: started
+    timeout: 1200

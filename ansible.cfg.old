@@ -1,3 +1,0 @@
-[defaults]
-ansible_user: core
-remote_user: core

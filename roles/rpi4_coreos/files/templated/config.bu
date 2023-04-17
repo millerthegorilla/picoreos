@@ -9,7 +9,7 @@ passwd:
   users:
     - name: core
       ssh_authorized_keys:
-        - "{{ motion_user_ssh_authorized_key }}"
+        - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINoxUCnyind0cAE1bwFDua8z6LTwkUadoyZXp3vQFCvj jamesstewartmiller@gmail.com"
 storage:
   links:
     - path: /etc/localtime

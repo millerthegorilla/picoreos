@@ -8,7 +8,7 @@
         owner: "{{ item.owner | default(template_user)}}"
         group: "{{ item.group | default(template_user)}}"
       loop:
-        - { src: 'sshd.conf.j2', dest: 'sshd.conf', mode: "0440" }
-        - { src: 'motion.conf.j2', dest: 'motion.conf', mode: "0440" }
+        - { src: 'config.bu.j2', dest: 'config.bu', mode: "0640" }
+        - { src: 'provision_image.sh.j2', dest: 'provision_image.sh', mode: "0750" }
   vars:
     template_user: "{{ lookup('env', 'USER') }}"

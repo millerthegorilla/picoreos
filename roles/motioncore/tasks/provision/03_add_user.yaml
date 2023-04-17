@@ -1,0 +1,31 @@
+- name: Add motion_user group
+  ansible.builtin.group:
+    name: motion_user
+    state: present
+  register: group_out
+  delegate_to: "{{ rpi4_coreos_ip }}"
+- name: Add video group (getent issue https://github.com/coreos/rpm-ostree/issues/49#issuecomment-478091562)
+  ansible.builtin.shell:
+    cmd: grep video:x:39 /etc/group && echo "already in video group" || echo video:x:39 >> /etc/group
+  register: video_out
+  delegate_to: "{{ rpi4_coreos_ip }}"
+- name: Add motion_user
+  ansible.builtin.user:
+    name: motion_user
+    group: motion_user
+    groups: video
+    append: true
+    seuser: user_u
+  register: user_out
+  delegate_to: "{{ rpi4_coreos_ip }}"
+- name: Enable lingering for motion_user
+  ansible.builtin.shell:
+      cmd: loginctl enable-linger motion_user 
+  delegate_to: "{{ rpi4_coreos_ip }}"
+- name: Reboot if necessary
+  command: echo "Machine will reboot if necessary"
+  notify: "reboot_handler"
+  when: >-
+      group_out.changed != False
+      and "already in video group" not in video_out.stdout_lines 
+      and user_out.changed != False 

@@ -1,0 +1,13 @@
+- name: remove dhcpv6-client
+  ansible.posix.firewalld:
+    service: dhcpv6-client
+    state: disabled
+- name: remove mdns
+  ansible.posix.firewalld:
+    service: mdns
+    state: disabled
+- name: lockdown ssh to local network only
+  ansible.posix.firewalld:
+    rich_rule: rule family=ipv4 source address={{  }} accept
+    permanent: true
+    state: enabled

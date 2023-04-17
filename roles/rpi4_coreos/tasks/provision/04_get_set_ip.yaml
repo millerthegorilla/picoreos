@@ -7,19 +7,22 @@
       Packages will then install and the machine will reboot
       several times.
   register: command_output
-  when: motioncore_ip is not defined or motioncore_ip == ""
+  when: rpi4_coreos_ip is not defined or rpi4_coreos_ip == ""
 - name: Set Ip of remote machine
   ansible.builtin.set_fact: 
-    motioncore_ip: "{{ command_output.user_input }}" 
+    rpi4_coreos_ip: "{{ command_output.user_input }}" 
     cacheable: true
-  when: motioncore_ip is not defined or motioncore_ip == ""
+  when: rpi4_coreos_ip is not defined or rpi4_coreos_ip == ""
 - name: Add host
   ansible.builtin.add_host:
-    name: '{{ motioncore_ip }}'
+    name: '{{ rpi4_coreos_ip }}'
     group: "motioncore"
 - name: Remove host from known_hosts
   ansible.builtin.shell:
-    cmd: ssh-keygen -R {{ motioncore_ip }}
-- name: Wait for remote to reboot...
-  ansible.builtin.wait_for_connection:
-  delegate_to: "{{ motioncore_ip }}"
+    cmd: ssh-keygen -R {{ rpi4_coreos_ip }}
+- name: Place microssd in pi and power up. Waiting for remote to boot...
+  ansible.builtin.wait_for:
+    host: "{{ rpi4_coreos_ip }}"
+    port: 22
+    state: started
+    timeout: 1200

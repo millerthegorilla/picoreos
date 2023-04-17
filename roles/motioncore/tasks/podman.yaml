@@ -1,6 +1,6 @@
 ---
 - block:
-    - name: Pull Python Image
+    - name: Pull Python Image - takes a while...
       containers.podman.podman_image:
         name: docker.io/library/python
         state: present
@@ -11,12 +11,12 @@
         path: "{{ image_build }}"
         state: present
       register: build_output
-    - debug: var=build_output
-    - name: Create secret
+    - name: Create email password secret
       containers.podman.podman_secret:
         state: present
-        name: motion_secret
-        data: "{{ lookup('password', '/dev/null length=32') }}"
+        force: true
+        name: motion_email_secret
+        data: "{{ motion_email_pass }}"
   remote_user: core
   become: true
   become_user: motion_user
