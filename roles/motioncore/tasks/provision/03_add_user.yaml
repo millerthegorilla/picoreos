@@ -15,7 +15,6 @@
     group: motion_user
     groups: video
     append: true
-    seuser: user_u
   register: user_out
   delegate_to: "{{ rpi4_coreos_ip }}"
 - name: Enable lingering for motion_user
@@ -26,6 +25,7 @@
   command: echo "Machine will reboot if necessary"
   notify: "reboot_handler"
   when: >-
-      group_out.changed != False
+      pkg_out.changed == False
+      and group_out.changed != False
       and "already in video group" not in video_out.stdout_lines 
       and user_out.changed != False 

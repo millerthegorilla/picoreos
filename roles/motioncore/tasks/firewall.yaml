@@ -2,12 +2,18 @@
   ansible.posix.firewalld:
     service: dhcpv6-client
     state: disabled
+  become: true
+  delegate_to: "{{ rpi4_coreos_ip }}"
 - name: remove mdns
   ansible.posix.firewalld:
     service: mdns
     state: disabled
+  become: true
+  delegate_to: "{{rpi4_coreos_ip}}"
 - name: lockdown ssh to local network only
   ansible.posix.firewalld:
-    rich_rule: rule family=ipv4 source address={{  }} accept
+    rich_rule: rule family=ipv4 source address="{{ local_network }}" accept
     permanent: true
     state: enabled
+  become: true
+  delegate_to: "{{ rpi4_coreos_ip }}"

@@ -1,7 +1,6 @@
 ---
 env_path: "{{ playbook_dir }}/.env"
 env_values:
-  - motion_email_pass
   - motion_email_username
   - motion_email_port
   - motion_email_host 
@@ -13,4 +12,13 @@ motioncore_pkgs:
   - fail2ban
   - v4l-utils
   - audit
+  - container-selinux
+  - python3-firewall
+  - setools-console
+  - policycoreutils
+  - selinux-policy
+  - selinux-policy-devel
+  - libselinux-utils
+  - libselinux
+  - udica
 # these packages are required.  Add extra packages to be installed above this line, as list members.

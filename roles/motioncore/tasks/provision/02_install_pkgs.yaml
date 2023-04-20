@@ -9,15 +9,9 @@
     state: present
   register: pkg_out
   delegate_to: "{{ rpi4_coreos_ip }}"
-  run_once: true
-- name: Install module for firewall
-  community.general.rpm_ostree_pkg:
-    name: python3-firewall
-    state: present
-  register: pyfwall
-  delegate_to: "{{ rpi4_coreos_ip }}"
+- debug: var=pkg_out
 - name: Reboot if necessary
-  command: echo "Machine will reboot if necessary"
+  command: echo "Machine will reboot"
   notify: "reboot_handler"
   when: >-
-    pkg_out.changed != False
+    pkg_out.changed == True

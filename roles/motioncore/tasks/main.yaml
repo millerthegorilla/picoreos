@@ -27,7 +27,7 @@
 - name: Modify firewall rules
   ansible.builtin.import_tasks: firewall.yaml
   # copy configuration files
-- name: Copy files to remote machine
+- name: Create directories and copy files to remote machine
   ansible.builtin.import_tasks: copy.yaml
   # setup podman
 - name: Setup podman

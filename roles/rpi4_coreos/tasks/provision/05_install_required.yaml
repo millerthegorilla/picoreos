@@ -14,8 +14,14 @@
    Install needed packages using the raw module
    *Takes a long time! (rpm-ostree install)*
   ansible.builtin.raw: >-
-    sudo rpm-ostree install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-37.noarch.rpm 
-    python python3-libselinux &>/dev/null && sudo reboot
+    sudo rpm-ostree --idempotent --reboot install "{{ rpmfusion_rpm_url }}"" 
+    python python3-libselinux &>/dev/null
   register: oc
-  failed_when: "oc.rc not in [ 0, 1 ]"
+  # failed_when: "oc.rc not in [ 0, 1 ]"
   delegate_to: "{{ rpi4_coreos_ip }}"
+- debug: var=oc
+- name: Wait for SSH to come up
+  local_action: wait_for
+                host="{{ rpi4_coreos_ip }}"
+                port=22
+                state=started

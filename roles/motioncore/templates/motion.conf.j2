@@ -22,7 +22,7 @@ setup_mode off
 ; pid_file value
 
 # File to write logs messages into.  If not defined stderr and syslog is used.
-log_file /var/log/motion.log
+log_file /var/log/custom_motion.log
 
 # Level of log messages [1..9] (EMG, ALR, CRT, ERR, WRN, NTC, INF, DBG, ALL).
 log_level 7
@@ -108,7 +108,7 @@ post_capture 0
 ; on_event_end value
 
 # Command to be executed when a movie file is closed.
-on_movie_end /bin/bash /var/home/motion_user/motionmail.sh %f
+on_movie_end /var/home/motion_user/motionmail.sh %f
 ############################################################
 # Picture output configuration parameters
 ############################################################
@@ -143,10 +143,10 @@ movie_filename %t-%v-%Y%m%d%H%M%S
 ############################################################
 
 # Port number used for the webcontrol.
-webcontrol_port 8080
+webcontrol_port 0
 
 # Restrict webcontrol connections to the localhost.
-webcontrol_localhost off
+webcontrol_localhost on
 
 # Type of configuration options to allow via the webcontrol.
 webcontrol_parms 0
@@ -156,10 +156,10 @@ webcontrol_parms 0
 ############################################################
 
 # The port number for the live stream.
-stream_port 8081
+stream_port 0
 
 # Restrict stream connections to the localhost.
-stream_localhost off
+stream_localhost on
 
 ##############################################################
 # Camera config files - One for each camera.

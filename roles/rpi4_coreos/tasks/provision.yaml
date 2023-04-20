@@ -40,4 +40,5 @@
       become: yes
       become_user: root
       become_method: sudo
-  # install packages and reboot
+- name: flush handlers
+  meta: flush_handlers

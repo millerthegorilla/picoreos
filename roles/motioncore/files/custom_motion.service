@@ -56,12 +56,12 @@ RestartPreventExitStatus=78
 # of these and other related options.
 #
 # Use "systemctl edit motion" to change these settings.
-#PrivateTmp=true
-#NoNewPrivileges=yes
-#PrivateNetwork=yes
-#ProtectHome=yes
-#DeviceAllow=/dev/video0
-#MountFlags=slave
+PrivateTmp=true
+NoNewPrivileges=yes
+PrivateNetwork=yes
+ProtectHome=yes
+DeviceAllow=/dev/video0
+MountFlags=slave
 #SystemCallFilter=
 
 [Install]
