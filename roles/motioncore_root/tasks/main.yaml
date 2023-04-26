@@ -14,7 +14,7 @@
   # cleanup temp files etc
 - name: Cleanup before beginning
   command: echo "this task will cleanup tempfiles"
-  notify: "mp_cleanup_handler"
+  notify: "mr_cleanup_handler"
 - name: flush handlers
   meta: flush_handlers
   # templates
@@ -30,10 +30,6 @@
 - name: Create directories and copy files to remote machine
   ansible.builtin.import_tasks: copy.yaml
   # setup podman
-- name: Setup podman
-  ansible.builtin.import_tasks: podman.yaml
-  delegate_to: "{{ rpi4_coreos_ip }}"
 - name: Start services
   ansible.builtin.import_tasks: run.yaml
   delegate_to: "{{ rpi4_coreos_ip }}"
-  notify: "mp_finalise_handler"

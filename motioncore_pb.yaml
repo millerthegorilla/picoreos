@@ -1,10 +1,10 @@
 ---
-# - hosts: localhost
-#   gather_facts: false
-#   remote_user: core
-#   roles:
-#     - rpi4_coreos
-#     - motioncore_podman
+- hosts: localhost
+  gather_facts: false
+  remote_user: core
+  roles:
+   # - rpi4_coreos
+    - motioncore_root
 - hosts: "192.168.200.12"
   remote_user: core
   become: yes
@@ -14,8 +14,7 @@
   vars:
     os_auditd_enabled: false
     os_immutable_fs: true
-    # os_security_users_allow: ["change_user",]  # overcome immutable filesystem
-    # os_mnt_boot_enabled: false # overcome immutable
+
 # set rpi4_coreos_ip in vars/main.yaml and run following command for non interactive run
-# if you know what the ip address will be.
+# if you know what the ip address will be and want to avoid ssh_known check (insecure!)
 # ansible-playbook motioncore_pb.yaml --ask-become-pass --ssh-common-args='-o StrictHostKeyChecking=no'

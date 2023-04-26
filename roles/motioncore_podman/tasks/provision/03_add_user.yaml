@@ -23,7 +23,7 @@
   delegate_to: "{{ rpi4_coreos_ip }}"
 - name: Reboot if necessary
   command: echo "Machine will reboot if necessary"
-  notify: "reboot_handler"
+  notify: "mp_reboot_handler"
   when: >-
       pkg_out.changed == False
       and group_out.changed != False

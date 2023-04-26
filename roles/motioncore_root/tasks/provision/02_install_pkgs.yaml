@@ -10,3 +10,8 @@
   register: pkg_out
   delegate_to: "{{ rpi4_coreos_ip }}"
 - debug: var=pkg_out
+- name: Reboot if necessary
+  command: echo "Machine will reboot"
+  notify: "mr_reboot_handler"
+  when: >-
+    pkg_out.changed == True

@@ -10,15 +10,15 @@ image_build: /var/home/motion_user/image_build
 motioncore_pkgs:
   - motion
   - fail2ban
-  - v4l-utils
   - audit
-  - container-selinux
-  - python3-firewall
-  - setools-console
-  - policycoreutils
-  - selinux-policy
-  - selinux-policy-devel
-  - libselinux-utils
-  - libselinux
-  - udica
+  # debugging selinux
+  # - container-selinux
+  # - python3-firewall
+  # - setools-console
+  # - policycoreutils
+  # - selinux-policy
+  # - selinux-policy-devel
+  # - libselinux-utils
+  # - libselinux
+  # - udica
 # these packages are required.  Add extra packages to be installed above this line, as list members.

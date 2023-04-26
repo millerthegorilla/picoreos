@@ -40,5 +40,5 @@
       become: yes
       become_user: root
       become_method: sudo
-- name: flush handlers
-  meta: flush_handlers
+# - name: flush handlers
+#   meta: flush_handlers
