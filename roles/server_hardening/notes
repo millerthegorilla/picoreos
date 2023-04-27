@@ -1,0 +1,10 @@
+selinux set default
+lockdown firewall
+install and configure fail2ban
+install a penetration testing framework
+install an antivirus and schedule scan
+install vpn
+
+remember to add audit=1 to kernel parameters
+
+
