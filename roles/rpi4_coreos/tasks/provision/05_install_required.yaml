@@ -15,7 +15,7 @@
    *Takes a long time! (rpm-ostree install)*
   ansible.builtin.raw: >-
     sudo rpm-ostree --idempotent install "{{ rpmfusion_rpm_url }}"
-    python python3-libselinux && sudo rpm-ostree db diff | grep Added: && sudo reboot &>/dev/null || exit 3
+    "{{ ansible_required_packages }}" && sudo rpm-ostree db diff | grep Added: && sudo reboot &>/dev/null || exit 3
   register: oc
   #failed_when: "oc.rc in [ 1, 3 ]"
   delegate_to: "{{ rpi4_coreos_ip }}"

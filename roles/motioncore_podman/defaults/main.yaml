@@ -1,19 +1,22 @@
 ---
 env_path: "{{ playbook_dir }}/.env"
 env_values:
-  - motion_email_username
-  - motion_email_port
+  - motion_email_address
   - motion_email_host 
-  - motion_email_sender
-  - motion_email_receiver
+  - motion_email_pass
 image_build: /var/home/motion_user/image_build
+ansible_required_packages:
+  - python
+  - python3-libselinux
+  - python3-rpm
+  - python3-firewall
 motioncore_pkgs:
   - motion
   - fail2ban
   - audit
+  - container-selinux
+  
   # debugging selinux
-  # - container-selinux
-  # - python3-firewall
   # - setools-console
   # - policycoreutils
   # - selinux-policy

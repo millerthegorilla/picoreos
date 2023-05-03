@@ -65,4 +65,4 @@ MountFlags=slave
 #SystemCallFilter=
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target

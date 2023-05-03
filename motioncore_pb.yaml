@@ -2,14 +2,16 @@
 - hosts: localhost
   gather_facts: false
   remote_user: core
+  vars:
+    motioncore_ip: "192.168.200.15"
   roles:
-   # - rpi4_coreos
-    - motioncore_root
-- hosts: "192.168.200.12"
+    #- rpi4_coreos
+    - motioncore_podman
+- hosts: "192.168.200.15"
   remote_user: core
   become: yes
   roles:
-    - devsec.hardening.os_hardening
+    - devsec.hardening.os_hardening # requires python3-rpm on the remote host
     - devsec.hardening.ssh_hardening
   vars:
     os_auditd_enabled: false

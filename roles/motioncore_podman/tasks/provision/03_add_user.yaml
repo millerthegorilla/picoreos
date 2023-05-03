@@ -25,7 +25,7 @@
   command: echo "Machine will reboot if necessary"
   notify: "mp_reboot_handler"
   when: >-
-      pkg_out.changed == False
-      and group_out.changed != False
-      and "already in video group" not in video_out.stdout_lines 
-      and user_out.changed != False 
+      pkg_out.changed != False
+      or group_out.changed != False
+      or ("already in video group" not in video_out.stdout_lines 
+      and user_out.changed != False)

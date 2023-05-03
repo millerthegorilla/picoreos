@@ -14,4 +14,4 @@
   command: echo "Machine will reboot"
   notify: "mr_reboot_handler"
   when: >-
-    pkg_out.changed == True
+    pkg_out['changed'] == True

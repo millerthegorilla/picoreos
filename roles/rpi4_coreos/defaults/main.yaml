@@ -1,0 +1,2 @@
+# string for rpm-ostree command in raw module
+ansible_required_packages: "python python3-libselinux python3-rpm python3-firewall"

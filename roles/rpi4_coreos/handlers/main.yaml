@@ -6,6 +6,9 @@
     state: absent
   loop:
     - sshd.conf
+    - config.bu
+    - config.ign
+    - provision_image.sh
   listen: "cleanup_handler"
 - name: Reboot remote and wait for it to restart
   become: true

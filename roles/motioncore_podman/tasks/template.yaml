@@ -10,5 +10,7 @@
       loop:
         - { src: 'sshd.conf.j2', dest: 'sshd.conf', mode: "0440" }
         - { src: 'motion.conf.j2', dest: 'motion.conf', mode: "0440" }
+        - { src: 'motion_mail.py.j2', dest: 'motion_mail.py', mode: "0440" }
+        - { src: 'motionmail.sh.j2', dest: 'motionmail.sh', mode: "0440" }
   vars:
     template_user: "{{ lookup('env', 'USER') }}"

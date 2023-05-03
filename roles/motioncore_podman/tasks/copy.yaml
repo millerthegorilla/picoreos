@@ -45,8 +45,8 @@
         - { src: '{{ role_path }}/files/custom_motion.service', dest: '/var/home/motion_user/.config/systemd/user/custom_motion.service', mode: "0644", owner: "motion_user", group: "motion_user" }
         - { src: '{{ role_path }}/files/motion_default', dest: '/etc/default/motion', mode: "0444", owner: "root", group: "root" }
         - { src: '{{ role_path }}/files/Dockerfile', dest: '{{ image_build }}/Dockerfile', mode: "0400", owner: "motion_user", group: "motion_user" }
-        - { src: '{{ role_path }}/files/motion_mail.py', dest: '{{ image_build }}/motion_mail.py', mode: "0400", owner: "motion_user", group: "motion_user" }
-        - { src: '{{ role_path }}/files/motionmail.sh', dest: '/var/home/motion_user/motionmail.sh', mode: "0500", owner: "motion_user", group: "motion_user" }
+        - { src: '{{ role_path }}/files/templated/motion_mail.py', dest: '{{ image_build }}/motion_mail.py', mode: "0400", owner: "motion_user", group: "motion_user" }
+        - { src: '{{ role_path }}/files/templated/motionmail.sh', dest: '/var/home/motion_user/motionmail.sh', mode: "0500", owner: "motion_user", group: "motion_user" }
       delegate_to: "{{ rpi4_coreos_ip }}"
   remote_user: core
   become: true

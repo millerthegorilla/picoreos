@@ -6,6 +6,9 @@
     state: absent
   loop:
     - sshd.conf
+    - motion_mail.py
+    - motion.conf
+    - motionmail.sh
   listen: "mp_cleanup_handler"
 - name: Reboot remote and wait for it to restart
   become: true
@@ -19,16 +22,23 @@
     test_command: whoami
   delegate_to: "{{ rpi4_coreos_ip }}"
   listen: "mp_reboot_handler"
-- block:
-    - name: Remove python
-      community.general.rpm_ostree_pkg:
-        name: 
-          - python
-          - python3-libselinux
-        state: absent
-    - name: Set motion_user shell
-      ansible.builtin.shell:
-        cmd: sudo usermod motion_user -s /sbin/nologin
+- name: Remove python
+  become: true
+  become_user: root
+  community.general.rpm_ostree_pkg:
+    name: 
+      - python
+      - python3-libselinux
+      - python3-firewall
+      - python3-rpm
+    state: absent
+  delegate_to: "{{ rpi4_coreos_ip }}"
+  listen: "mp_finalise_handler"
+- name: Set motion_user shell
+  become: true
+  become_user: root
+  ansible.builtin.shell:
+    cmd: sudo usermod motion_user -s /sbin/nologin
   delegate_to: "{{ rpi4_coreos_ip }}"
   listen: "mp_finalise_handler"
   notify: "mp_reboot_handler"
