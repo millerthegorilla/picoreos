@@ -1,9 +1,10 @@
 ---
 env_path: "{{ playbook_dir }}/.env"
 env_values:
-  - motion_email_address
-  - motion_email_host 
-  - motion_email_pass
+  - motion_sender_email_address
+  - motion_receiver_email_address
+  - motion_email_host
+  - motion_email_port
 image_build: /var/home/motion_user/image_build
 ansible_required_packages:
   - python
@@ -15,6 +16,13 @@ motioncore_pkgs:
   - fail2ban
   - audit
   - container-selinux
+motion_email_pass: !vault |
+              $ANSIBLE_VAULT;1.1;AES256
+              65396337666434613739386439636133376265316434643063643535393864343333303465386664
+              6139663033386535613132306162663031356136366333610a616162313430646534333939346165
+              35373461653965333532666130613831333461333964633636333364383539313736653234393635
+              3933626339333534370a633438313238623838306265373930653865636539303238376531333334
+              62656434633635386636353566313533656139373635313032366239666665346264
   
   # debugging selinux
   # - setools-console
@@ -24,4 +32,3 @@ motioncore_pkgs:
   # - libselinux-utils
   # - libselinux
   # - udica
-# these packages are required.  Add extra packages to be installed above this line, as list members.

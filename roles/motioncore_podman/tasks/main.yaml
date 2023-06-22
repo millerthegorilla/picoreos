@@ -12,6 +12,18 @@
     - "{{ output.results }}"
   changed_when: false
   # cleanup temp files etc
+- name: Test that motioncore_ip is set
+  command: echo 'motioncore_ip must be set'
+  when: 'motioncore_ip is undefined or motioncore_ip == ""'
+  register: out
+- debug: var=out
+- name: exit if motioncore_ip is not set
+  meta: end_play
+  when: 'motioncore_ip is undefined or motioncore_ip == ""'
+- name: output stuff
+  command: echo "{{motioncore_ip}}"
+  register: out2
+- debug: var=out2
 - name: Cleanup before beginning
   command: echo "this task will cleanup tempfiles"
   notify: "mp_cleanup_handler"
@@ -31,9 +43,10 @@
   ansible.builtin.import_tasks: copy.yaml
   # setup podman
 - name: Setup podman
-  ansible.builtin.import_tasks: podman.yaml
-  delegate_to: "{{ rpi4_coreos_ip }}"
+  ansible.builtin.import_tasks: podman.yaml 
+  vars:
+    - mail_passwd: "{{ passwd }}"
+  delegate_to: "{{ motioncore_ip }}"
 - name: Start services
   ansible.builtin.import_tasks: run.yaml
-  delegate_to: "{{ rpi4_coreos_ip }}"
-  notify: "mp_finalise_handler"
+  delegate_to: "{{ motioncore_ip }}"

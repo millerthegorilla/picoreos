@@ -20,7 +20,10 @@
 - name: Remove host from known_hosts
   ansible.builtin.shell:
     cmd: ssh-keygen -R {{ rpi4_coreos_ip }}
-- name: Place microssd in pi and power up. Waiting for remote to boot...
+- name: >-
+    Place microssd in pi and power up.
+    Make sure to have ssh key passphrase handy, if you use one.
+    ...Waiting for remote to boot...
   ansible.builtin.wait_for:
     host: "{{ rpi4_coreos_ip }}"
     port: 22

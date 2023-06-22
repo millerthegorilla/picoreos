@@ -1,0 +1,14 @@
+
+module policy_motioncore 1.0;
+
+require {
+	type container_runtime_t;
+	type unconfined_t;
+	class process2 nnp_transition;
+}
+
+#============= unconfined_t ==============
+allow unconfined_t container_runtime_t:process2 nnp_transition;
+
+#============= container_runtime_t ==============
+allow container_runtime_t self:process2 nnp_transition;

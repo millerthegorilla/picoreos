@@ -1,0 +1,9 @@
+MOTION_EMAIL_HOST="smtp.gmail.com"
+MOTION_EMAIL_PORT="465"
+MOTION_SENDER_EMAIL_ADDRESS="validemailaddress@gmail.com"
+MOTION_RECEIVER_EMAIL_ADDRESS="validemailaddress@gmail.com"
+
+# I use the same email address for both sender and receiver.
+# The sender should be your smtp provider email address.
+# Note that the smtp provider email password (app password for gmail) 
+# is encoded in vault form in defaults/main.yaml as motion_email_pass

@@ -1,6 +1,3 @@
-rpi4_coreos_user_ssh_authorized_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINoxUCnyind0cAE1bwFDua8z6LTwkUadoyZXp3vQFCvj jamesstewartmiller@gmail.com"
-rpi4_coreos_ip: "{{ motioncore_ip }}"
+ssh_path: '~/.ssh/id_ed25519.pub'
+rpi4_coreos_user_ssh_authorized_key: "{{lookup('ansible.builtin.file', ssh_path) }}"
 rpi4_coreos_provision_disk: /dev/sda
-fedora_version: 37
-rpmfusion_rpm_url: "https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-{{ fedora_version }}.noarch.rpm"
-# rpmfusion_rpm_url: "https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-{{ fedora_version }}.noarch.rpm"

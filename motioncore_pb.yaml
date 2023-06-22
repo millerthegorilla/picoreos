@@ -1,22 +1,75 @@
 ---
-- hosts: localhost
-  gather_facts: false
-  remote_user: core
-  vars:
-    motioncore_ip: "192.168.200.15"
-  roles:
-    #- rpi4_coreos
-    - motioncore_podman
-- hosts: "192.168.200.15"
+# - hosts: localhost
+#   gather_facts: false
+#   remote_user: core
+#   vars:
+#     rpi4_coreos_ip: "192.168.200.15"
+#   roles:
+#     - role: rpi4_coreos
+#     - role: motioncore_podman
+#       vars:
+#          motioncore_ip: "{{ rpi4_coreos_ip }}"
+# - hosts: "192.168.200.15" # '{{ rpi4_coreos_ip }}'
+#   remote_user: core
+#   become: yes
+#   vars:
+#     os_auditd_enabled: false
+#     os_immutable_fs: true
+#   roles:
+#     - devsec.hardening.os_hardening
+# - hosts: "192.168.200.15" # '{{ rpi4_coreos_ip }}'
+#   remote_user: core
+#   become: yes
+#   roles:
+#     - devsec.hardening.ssh_hardening
+- hosts: "192.168.200.15" # '{{ rpi4_coreos_ip }}'
   remote_user: core
   become: yes
-  roles:
-    - devsec.hardening.os_hardening # requires python3-rpm on the remote host
-    - devsec.hardening.ssh_hardening
   vars:
-    os_auditd_enabled: false
-    os_immutable_fs: true
+    auto_connect: true
+    # auto_connect_host: "us8830"
+    firewall: true
+    kill_switch: true
+    technology: "NORDLYNX"
+    username: jamesstewartmiller@gmail.com
+    password: !vault |
+      $ANSIBLE_VAULT;1.1;AES256
+      31326262303233363832643139363437656364663361306331366566343738366166636264656638
+      3039613136663037623266646161306466393163343735330a393335373635643465326336613734
+      62613966326639313365616335383737366336356230306361633532636231633830393365366433
+      3737613064353339620a663039373337636363326430666461396461346466636336666465623266
+      31646163376266343031303438333336653938616665666563633963636232633030
+    # server: "us8830"
+    whitelisted_ports: [22]
+    whitelisted_subnets: ["192.168.200.5/24"]
+  roles:
+     - ifel.nordvpn
+  tasks: # the tasks are specific to the motioncore_podman role.
+    - name: Remove python
+      become: true
+      become_user: root
+      community.general.rpm_ostree_pkg:
+        name: "{{ ansible_required_packages }}"
+        state: absent
+      delegate_to: "{{ rpi4_coreos_ip }}"
+    - name: Set motion_user shell
+      become: true
+      become_user: root
+      ansible.builtin.shell:
+        cmd: sudo usermod motion_user -s /sbin/nologin
+      delegate_to: "{{ rpi4_coreos_ip }}"
+    - name: Reboot remote and wait for it to restart
+      become: true
+      become_user: root
+      ansible.builtin.reboot:
+        msg: "Reboot initiated by Ansible"
+        connect_timeout: 5
+        reboot_timeout: 600
+        pre_reboot_delay: 0
+        post_reboot_delay: 5
+        test_command: whoami
+      delegate_to: "{{ rpi4_coreos_ip }}"
 
-# set rpi4_coreos_ip in vars/main.yaml and run following command for non interactive run
-# if you know what the ip address will be and want to avoid ssh_known check (insecure!)
-# ansible-playbook motioncore_pb.yaml --ask-become-pass --ssh-common-args='-o StrictHostKeyChecking=no'
+# # set rpi4_coreos_ip in vars/main.yaml and run following command for non interactive run
+# # if you know what the ip address will be and want to avoid ssh_known check (insecure!)
+# # ansible-playbook motioncore_pb.yaml --ask-become-pass --ssh-common-args='-o StrictHostKeyChecking=no'

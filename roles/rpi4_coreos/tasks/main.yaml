@@ -19,4 +19,3 @@
   # Provision the microsd card and setup the machine
 - name: Provision machine
   ansible.builtin.import_tasks: provision.yaml
-  # copy configuration files

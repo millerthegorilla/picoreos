@@ -1,5 +1,13 @@
 ---
 - block:
+   - name: install selinux policy module
+     ansible.builtin.shell:
+       cmd: >-
+         cd /var/home/motion_user
+         && /usr/bin/checkmodule -M -m -o policy_motioncore.mod policy_motioncore.te
+         && /usr/bin/semodule_package -o policy_motioncore.pp -m policy_motioncore.mod
+         && /usr/sbin/semodule -i policy_motioncore.pp
+         && rm -rf policy_motioncore*
    - name: Mask motion.service
      ansible.builtin.systemd:
        name: motion.service

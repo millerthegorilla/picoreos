@@ -9,7 +9,7 @@ passwd:
   users:
     - name: core
       ssh_authorized_keys:
-        - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINoxUCnyind0cAE1bwFDua8z6LTwkUadoyZXp3vQFCvj jamesstewartmiller@gmail.com"
+        - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGRpsyeJmueFJUjyuAOeH/0z02oLP9ZYoJtHQxCfSO5i jamesstewartmiller@gmail.com"
 storage:
   links:
     - path: /etc/localtime
@@ -19,22 +19,22 @@ storage:
       device: /dev/disk/by-partlabel/var
       wipe_volume: true
   disks:
-    -
-      device: /dev/disk/by-id/coreos-boot-disk
+    - device: /dev/disk/by-id/coreos-boot-disk
       partitions:
       - number: 4
         label: root
         size_mib: 8192
         resize: true
-      - size_mib: 0
-        resize: true
+      - number: 5
         label: var
+        size_mib: 0
+        resize: true
   filesystems:
     - path: /var
       device: /dev/mapper/var
       format: xfs
       label: var
-     # wipe_filesystem: true
+      # wipe_filesystem: true
       with_mount_unit: true
 
 # variant: fcos

@@ -1,11 +1,19 @@
 ---
 env_path: "{{ playbook_dir }}/.env"
 env_values:
-  - motion_email_host 
-  - motion_email_address
-  - motion_email_pass
+  - motion_email_host
+  - motion_email_port
+  - motion_sender_email_address
+  - motion_reciever_email_address
 image_build: /var/home/motion_user/image_build
 motioncore_pkgs:
   - motion
   - fail2ban
 # these packages are required.  Add extra packages to be installed above this line, as list members.
+motion_email_pass: !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        65376665633233323339323861323039666539336538613061306433363865333432653535663063
+        6234366137393635346234393563386137656236643264650a383161656463633633313562383230
+        33313531356231656434656462616339376134633664313438656666313063363336383035363634
+        3736373032666363620a616465323465323537643861353763353839373130396266356664613935
+        36626136326566363866363532316339316365343464343666383534666635326664

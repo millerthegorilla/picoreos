@@ -8,12 +8,6 @@
          && /usr/bin/semodule_package -o policy_motioncore.pp -m policy_motioncore.mod
          && /usr/sbin/semodule -i policy_motioncore.pp
          && rm -rf policy_motioncore*
-   - name: Mask motion.service
-     ansible.builtin.systemd:
-       name: motion.service
-       masked: true
-       enabled: false
-       state: stopped
    - name: Start fail2ban.service
      ansible.builtin.service:
        name: fail2ban.service

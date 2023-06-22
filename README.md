@@ -8,8 +8,7 @@ ansible-vault encrypt_string --ask-vault-pass 'gmail_password_here' --name 'moti
 ```
 MOTION_EMAIL_HOST="smtp.gmail.com"
 MOTION_EMAIL_ADDRESS="jamesstewartmiller@gmail.com"
-MOTION_EMAIL_PASS="!vault |
-        $ANSIBLE_VAULT;1.1;AES256
-        39653...
-        ....653534643561"
+MOTION_EMAIL_PASS="\\\$ANSIBLE_VAULT;1.1;AES256\n39653...\n....\n653534643561"
 ```
+
+Todo -- make a vault file for the motion_email_pass

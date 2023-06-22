@@ -35,14 +35,14 @@ if __name__ == "__main__":
 
     message = MIMEMultipart()
     message['Subject'] = subject
-    message['From'] = "{{ motion_email_address }}"
-    message['To'] = "{{ motion_email_address }}"
+    message['From'] = "{{ motion_sender_email_address }}"
+    message['To'] = "{{ motion_reciever_email_address }}"
     html_part = MIMEText(body, 'html')
     message.attach(html_part)
     message.attach(part)
 
     sslcontext = ssl.create_default_context()
     server = smtplib.SMTP_SSL("{{ motion_email_host }}", "{{ motion_email_port }}", context=sslcontext)
-    server.login("{{ motion_email_address }}", "{{ motion_email_pass }}")
-    server.sendmail("{{ motion_email_address }}", "{{ motion_email_address }}", message.as_string())
+    server.login("{{ motion_sender_email_address }}", "{{ motion_email_pass }}")
+    server.sendmail("{{ motion_sender_email_address }}", "{{ motion_receiver_email_address }}", message.as_string())
     server.quit()
