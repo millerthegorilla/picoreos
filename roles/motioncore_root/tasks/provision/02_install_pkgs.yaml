@@ -1,6 +1,6 @@
 - name: Wait for remote to reboot...
   ansible.builtin.wait_for:
-    host: "{{ rpi4_coreos_ip }}"
+    host: "{{ remote_ip }}"
     port: 22
     state: started
 - name: Install packages on remote machine * takes a long time! (rpm-ostree) *
@@ -8,7 +8,7 @@
     name: "{{ motioncore_pkgs | list }}"
     state: present
   register: pkg_out
-  delegate_to: "{{ rpi4_coreos_ip }}"
+  delegate_to: "{{ remote_ip }}"
 - debug: var=pkg_out
 - name: Reboot if necessary
   command: echo "Machine will reboot"

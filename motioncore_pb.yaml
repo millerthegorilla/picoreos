@@ -1,28 +1,27 @@
 ---
-# - hosts: localhost
-#   gather_facts: false
-#   remote_user: core
-#   vars:
-#     rpi4_coreos_ip: "192.168.200.15"
-#   roles:
-#     - role: rpi4_coreos
-#     - role: motioncore_podman
-#       vars:
-#          motioncore_ip: "{{ rpi4_coreos_ip }}"
-# - hosts: "192.168.200.15" # '{{ rpi4_coreos_ip }}'
-#   remote_user: core
-#   become: yes
-#   vars:
-#     os_auditd_enabled: false
-#     os_immutable_fs: true
-#   roles:
-#     - devsec.hardening.os_hardening
-# - hosts: "192.168.200.15" # '{{ rpi4_coreos_ip }}'
-#   remote_user: core
-#   become: yes
-#   roles:
-#     - devsec.hardening.ssh_hardening
-- hosts: "192.168.200.15" # '{{ rpi4_coreos_ip }}'
+- hosts: localhost
+  gather_facts: false
+  remote_user: core
+  roles:
+  #  - role: rpi4_coreos
+    - role: get_set_ip
+  #  - role: motioncore_podman
+      vars:
+         motioncore_ip: "{{ hostvars['localhost']['remote_ip'] }}"
+- hosts: "{{ hostvars['localhost']['remote_ip'] }}"
+  remote_user: core
+  become: yes
+  roles:
+    - role: ansible-collection-hardening.os_hardening
+      vars:
+        os_auditd_enabled: false
+        os_immutable_fs: true
+- hosts: "{{ hostvars['localhost']['remote_ip'] }}"
+  remote_user: core
+  become: yes
+  roles:
+    - devsec.hardening.ssh_hardening
+- hosts: "{{ hostvars['localhost']['remote_ip'] }}"
   remote_user: core
   become: yes
   vars:
@@ -42,22 +41,39 @@
     # server: "us8830"
     whitelisted_ports: [22]
     whitelisted_subnets: ["192.168.200.5/24"]
+  tasks:
+    - name: Download nordvpn
+      ansible.builtin.shell:
+        cmd: |
+          curl -sSf https://downloads.nordcdn.com/apps/linux/install.sh -o install.sh 
+          && toolbox create -y 
+          && curl -sSf https://downloads.nordcdn.com/apps/linux/install.sh -o install.sh 
+          && toolbox run sudo /bin/bash install.sh -n
+    - name: Copy Nordvpn executable
+      ansible.builtin.shell:
+        cmd: toolbox run cp /usr/bin/nordvpn . && sudo mv ./nordvpn /usr/bin/
+- hosts: "{{ hostvars['localhost']['remote_ip'] }}"
+  remote_user: core
+  become: yes
   roles:
-     - ifel.nordvpn
-  tasks: # the tasks are specific to the motioncore_podman role.
+    - ifel.nordvpn
+- hosts: "{{ hostvars['localhost']['remote_ip'] }}"
+  remote_user: core
+  become: yes
+  tasks: # the tasks are specific to the "{{ hostvars['localhost']['remote_ip'] }}"_podman role.
     - name: Remove python
       become: true
       become_user: root
       community.general.rpm_ostree_pkg:
         name: "{{ ansible_required_packages }}"
         state: absent
-      delegate_to: "{{ rpi4_coreos_ip }}"
+      delegate_to: "{{ remote_ip }}"
     - name: Set motion_user shell
       become: true
       become_user: root
       ansible.builtin.shell:
         cmd: sudo usermod motion_user -s /sbin/nologin
-      delegate_to: "{{ rpi4_coreos_ip }}"
+      delegate_to: "{{ remote_ip }}"
     - name: Reboot remote and wait for it to restart
       become: true
       become_user: root
@@ -68,8 +84,8 @@
         pre_reboot_delay: 0
         post_reboot_delay: 5
         test_command: whoami
-      delegate_to: "{{ rpi4_coreos_ip }}"
+      delegate_to: "{{ remote_ip }}"
 
-# # set rpi4_coreos_ip in vars/main.yaml and run following command for non interactive run
+# # set remote_ip in vars/main.yaml and run following command for non interactive run
 # # if you know what the ip address will be and want to avoid ssh_known check (insecure!)
-# # ansible-playbook motioncore_pb.yaml --ask-become-pass --ssh-common-args='-o StrictHostKeyChecking=no'
+# # ansible-playbook "{{ hostvars['localhost']['remote_ip'] }}"_pb.yaml --ask-become-pass --ssh-common-args='-o StrictHostKeyChecking=no'

@@ -50,3 +50,20 @@
 - name: Start services
   ansible.builtin.import_tasks: run.yaml
   delegate_to: "{{ motioncore_ip }}"
+- name: Set password for user Core
+  become: yes
+  ansible.builtin.user:
+    name: core
+    password: "$y$j9T$8/TjY3TkRGOQjS4uu0J0x.$pli0U6chWvaZUquMKOWS6pN/J628rTKlWz73UytEmB2"
+  delegate_to: "{{ motioncore_ip }}"
+- name: Remove user Core from wheel group
+  become: yes
+  ansible.builtin.command: "gpasswd -d core wheel"
+  register: command_result
+  changed_when: "not 'is not a member of' in command_result.stderr"
+  failed_when: false
+  delegate_to: "{{ motioncore_ip }}"
+- name: update sudo properties
+  become: yes
+  ansible.builtin.command: "echo -e '# Allow members of group sudo to execute any command\n%sudo   ALL=(ALL:ALL) ALL\nDefaults timestamp_timeout=5' | tee -a /etc/sudoers"
+  delegate_to: "{{ motioncore_ip }}"
