@@ -3,19 +3,36 @@
   gather_facts: false
   remote_user: core
   roles:
-  #  - role: rpi4_coreos
+    # - role: rpi4_coreos
     - role: get_set_ip
-  #  - role: motioncore_podman
+- hosts: localhost #"{{ hostvars['localhost']['remote_ip'] }}"
+  remote_user: core
+  roles:
+    - role: motioncore_podman
       vars:
-         motioncore_ip: "{{ hostvars['localhost']['remote_ip'] }}"
+        motioncore_ip: "{{ hostvars['localhost']['remote_ip'] }}"
+        ansible_become_pass: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          61613334323062353265313135353562383033396164386565646362346135663162303630383866
+          6666656166386537353861636338343136613332623638660a356132373431643062353632333130
+          35313832353365326461626634623633313766303135333236306432306234333965386366633064
+          6238663032613161350a666637653935653963653633626333376663396130333736636666333238
+          30316166646266313031386162643839323861623033383634383739653866363939
 - hosts: "{{ hostvars['localhost']['remote_ip'] }}"
   remote_user: core
   become: yes
   roles:
-    - role: ansible-collection-hardening.os_hardening
+    - role: devsec.hardening.os_hardening
       vars:
         os_auditd_enabled: false
         os_immutable_fs: true
+        ansible_become_pass: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          61613334323062353265313135353562383033396164386565646362346135663162303630383866
+          6666656166386537353861636338343136613332623638660a356132373431643062353632333130
+          35313832353365326461626634623633313766303135333236306432306234333965386366633064
+          6238663032613161350a666637653935653963653633626333376663396130333736636666333238
+          30316166646266313031386162643839323861623033383634383739653866363939
 - hosts: "{{ hostvars['localhost']['remote_ip'] }}"
   remote_user: core
   become: yes
