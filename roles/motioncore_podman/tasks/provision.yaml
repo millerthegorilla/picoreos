@@ -1,11 +1,11 @@
 - name: Install packages and reboot
   ansible.builtin.include_tasks: 
     file: provision/01_install_pkgs.yaml
-    apply:
-      remote_user: core
-      become: yes
-      become_user: root
-      become_method: sudo
+    # apply:
+    #   remote_user: core
+    #   become: yes
+    #   # become_user: root
+    #   #become_method: sudo
 - name: Add and configure user
   ansible.builtin.include_tasks: 
     file: provision/02_add_user.yaml

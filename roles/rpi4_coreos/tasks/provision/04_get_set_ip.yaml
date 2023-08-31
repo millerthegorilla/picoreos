@@ -15,7 +15,7 @@
   when: remote_ip is not defined or remote_ip == ""
 - name: Add host
   ansible.builtin.add_host:
-    name: '{{ remote_ip }}'
+    name: "{{ remote_ip }}"
     group: "motioncore"
 - name: Remove host from known_hosts
   ansible.builtin.shell:
@@ -25,7 +25,7 @@
     Make sure to have ssh key passphrase handy, if you use one.
     ...Waiting for remote to boot...
   ansible.builtin.wait_for:
-    host: "{{ remote_ip }}"
+    host: "{{ hostvars['localhost']['remote_ip'] }}"
     port: 22
     state: started
     timeout: 1200

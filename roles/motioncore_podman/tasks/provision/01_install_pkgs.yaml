@@ -1,17 +1,21 @@
-- name: print remote ip
-  ansible.builtin.command: echo -e '"{{ remote_ip }}"'
-  register: cmd_out
-- debug: var=cmd_out
 - name: Wait for remote to reboot...
   ansible.builtin.wait_for:
-    host: "{{ remote_ip }}"
+    host: "{{ hostvars['localhost']['remote_ip'] }}"
     port: 22
     state: started
   delegate_to: localhost
 - name: Install packages on remote machine * takes a long time! (rpm-ostree) *
+  remote_user: core
+  become: yes
+  become_user: root
+  become_method: sudo
   community.general.rpm_ostree_pkg:
     name: "{{ motioncore_pkgs | list }}"
     state: present
   register: pkg_out
-  delegate_to: "{{ remote_ip }}"
+  delegate_to: "{{ hostvars['localhost']['remote_ip'] }}"
 - debug: var=pkg_out
+- name: store pkg_out
+  ansible.builtin.set_fact: 
+    pkg_out: pkg_out 
+    cacheable: true

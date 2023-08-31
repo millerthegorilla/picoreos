@@ -16,6 +16,7 @@ motioncore_pkgs:
   - fail2ban
   - audit
   - container-selinux
+  - firewalld
 motion_email_pass: !vault |
               $ANSIBLE_VAULT;1.1;AES256
               65396337666434613739386439636133376265316434643063643535393864343333303465386664

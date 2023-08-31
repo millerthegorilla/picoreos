@@ -3,15 +3,15 @@
    ** Takes a long time! (rpm-ostree install) **
   ansible.builtin.raw: >-
     sudo rpm-ostree --idempotent install {{ rpmfusion_rpm_url + ' ' + ansible_required_packages }}
-  delegate_to: "{{ remote_ip }}"
+  delegate_to: "{{ hostvars['localhost']['remote_ip'] }}"
 - name: Reboot
   ansible.builtin.raw: systemd-run --on-active=5 shutdown -r now
-  delegate_to: "{{ remote_ip }}"
+  delegate_to: "{{ hostvars['localhost']['remote_ip'] }}"
 - name: Pause
   ansible.builtin.pause:
     seconds: 10
 - name: Wait for SSH to be up
   local_action: wait_for
-                host="{{ remote_ip }}"
+                host="{{ hostvars['localhost']['remote_ip'] }}"
                 port=22
                 state=started

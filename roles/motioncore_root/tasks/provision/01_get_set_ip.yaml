@@ -22,7 +22,7 @@
     cmd: ssh-keygen -R {{ remote_ip }}
 - name: Place microssd in pi and power up. Waiting for remote to boot...
   ansible.builtin.wait_for:
-    host: "{{ remote_ip }}"
+    host: "{{ hostvars['localhost']['remote_ip'] }}"
     port: 22
     state: started
     timeout: 1200

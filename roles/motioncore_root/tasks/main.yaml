@@ -32,4 +32,4 @@
   # setup podman
 - name: Start services
   ansible.builtin.import_tasks: run.yaml
-  delegate_to: "{{ remote_ip }}"
+  delegate_to: "{{ hostvars['localhost']['remote_ip'] }}"

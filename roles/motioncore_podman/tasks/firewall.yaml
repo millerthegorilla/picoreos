@@ -3,17 +3,17 @@
     service: dhcpv6-client
     state: disabled
   become: true
-  delegate_to: "{{ remote_ip }}"
+  delegate_to: "{{ hostvars['localhost']['remote_ip'] }}"
 - name: remove mdns
   ansible.posix.firewalld:
     service: mdns
     state: disabled
   become: true
-  delegate_to: "{{remote_ip}}"
+  delegate_to: "{{ hostvars['localhost']['remote_ip'] }}"
 - name: lockdown ssh to local network only
   ansible.posix.firewalld:
     rich_rule: rule family=ipv4 source address="{{ local_network }}" accept
     permanent: true
     state: enabled
   become: true
-  delegate_to: "{{ remote_ip }}"
+  delegate_to: "{{ hostvars['localhost']['remote_ip'] }}"

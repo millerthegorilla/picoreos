@@ -3,7 +3,7 @@
   gather_facts: false
   remote_user: core
   roles:
-    # - role: rpi4_coreos
+   # - role: rpi4_coreos
     - role: get_set_ip
 - hosts: localhost #"{{ hostvars['localhost']['remote_ip'] }}"
   remote_user: core

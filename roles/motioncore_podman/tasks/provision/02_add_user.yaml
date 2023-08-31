@@ -3,12 +3,12 @@
     name: motion_user
     state: present
   register: group_out
-  delegate_to: "{{ remote_ip }}"
+  delegate_to: "{{ hostvars['localhost']['remote_ip'] }}"
 - name: Add video group (getent issue https://github.com/coreos/rpm-ostree/issues/49#issuecomment-478091562)
   ansible.builtin.shell:
     cmd: grep video:x:39 /etc/group && echo "already in video group" || echo video:x:39 >> /etc/group
   register: video_out
-  delegate_to: "{{ remote_ip }}"
+  delegate_to: "{{ hostvars['localhost']['remote_ip'] }}"
 - name: Add motion_user
   ansible.builtin.user:
     name: motion_user
@@ -16,16 +16,21 @@
     groups: video
     append: true
   register: user_out
-  delegate_to: "{{ remote_ip }}"
+  delegate_to: "{{ hostvars['localhost']['remote_ip'] }}"
 - name: Enable lingering for motion_user
   ansible.builtin.shell:
       cmd: loginctl enable-linger motion_user 
-  delegate_to: "{{ remote_ip }}"
+  delegate_to: "{{ hostvars['localhost']['remote_ip'] }}"
+- name: print motioncore.hostvars
+  command: echo "{{ hostvars['localhost']['pkg_out'] }}"
+  register: hv_out
+  delegate_to: "{{ hostvars['localhost']['remote_ip'] }}"
+- debug: var=hv_out
 - name: Reboot if necessary
   command: echo "Machine will reboot if necessary"
   notify: "mp_reboot_handler"
   when: >-
-      pkg_out.changed != False
+      hostvars.motioncore.pkg_out.changed != False
       or group_out.changed != False
       or ("already in video group" not in video_out.stdout_lines 
       and user_out.changed != False)
