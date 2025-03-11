@@ -1,0 +1,74 @@
+#!/usr/bin/python3
+
+import hashlib
+import os
+import sys
+import smtplib
+import ssl
+import subprocess
+import socket
+import logging
+import datetime
+import time
+from systemd.journal import JournalHandler
+from email import encoders
+from email.mime.base import MIMEBase
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from pathlib import Path
+
+logging.basicConfig(filename='/var/log/motion/motion.log',
+                    filemode='a',
+                    format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
+                    datefmt='%H:%M:%S',
+                    level=logging.DEBUG)
+
+
+log = logging.getLogger('Startup')
+log.addHandler(JournalHandler())
+
+def get_ip():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.settimeout(0)
+    s.setdefaulttimeout(0.01)
+    try:
+        # doesn't even have to be reachable
+        s.connect(('10.254.254.254', 1))
+        IP = s.getsockname()[0]
+    except Exception:
+        IP = '127.0.0.1'
+    finally:
+        s.close()
+    return IP
+
+if __name__ == "__main__":
+    if 'IFACE' in os.environ:
+        if os.environ.get('IFACE') != 'tun0':
+            # time.sleep(100)
+            # if os.environ.get('IFACE') != 'tun0':
+            #     log.warning("Bootscript failure - iface is not tun0.  It is " + str(os.environ.get('IFACE')))
+            sys.exit(0)
+    else:
+        log.warning("Bootscript failure - no iface")
+        sys.exit(0)
+    log.info("Machine is booting at " + str(datetime.datetime.now(datetime.timezone.utc)))
+    subject = "Motioncore 1 is booting"
+    body = f"<h2><style='color:red'>Motioncore boot</style></h2><br><h3>Motioncore 1 is booting!</h3>"
+    tunip = subprocess.run(["/etc/motion/source.sh",''], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, check=True)
+    address = tunip.stdout.decode('utf-8')
+    if "exist" in address:
+        body= f"<h2><style='color:red'>Motioncore boot</style></h2><br><h3>VPN failure!</h3>"
+        address = get_ip()
+    address = address.strip()
+    message = MIMEMultipart()
+    message['Subject'] = subject
+    message['From'] = "{{ motion_sender_email_address }}"
+    message['To'] = "{{ motion_receiver_email_address}}"
+    html_part = MIMEText(body, 'html')
+    message.attach(html_part)
+
+    sslcontext = ssl.create_default_context()
+    server = smtplib.SMTP_SSL("smtp.gmail.com", "465", context=sslcontext, source_address=(address, 0))
+    server.login("{{ motion_email_host_address }}", "{ os.getenv('MOTION_EMAIL_PASSWORD') }")
+    server.sendmail("{{ motion_email_host_address }}", "{{ motion_receiver_email_address }}", message.as_string())
+    server.quit()

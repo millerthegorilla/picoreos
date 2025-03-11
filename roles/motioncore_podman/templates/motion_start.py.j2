@@ -1,0 +1,48 @@
+#!/usr/bin/python3
+
+import datetime
+import hashlib
+import logging
+import os
+import sys
+import smtplib
+import ssl
+import subprocess
+from systemd.journal import JournalHandler
+from email import encoders
+from email.mime.base import MIMEBase
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from pathlib import Path
+
+logging.basicConfig(filename='/var/log/motion/motion.log',
+                    filemode='a',
+                    format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
+                    datefmt='%H:%M:%S',
+                    level=logging.DEBUG)
+
+log = logging.getLogger('motion_start')
+log.addHandler(JournalHandler())
+
+if __name__ == "__main__":
+    log.info("Motion has been detected")
+    subject = "Motion has been detected"
+    body = f"<h2><style='color:red'>Motion detected!</style></h2><br><h3>Motion has been detected.  The file will arrive shortly.</h3>"
+    message = MIMEMultipart()
+    message['Subject'] = subject
+    message['From'] = "{{ motion_sender_email_address }}"
+    message['To'] = "{{ motion_receiver_email_address }}"
+    html_part = MIMEText(body, 'html')
+    message.attach(html_part)
+
+    tunip = subprocess.run(["/etc/motion/source.sh",''], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
+    address = tunip.stdout.decode('utf-8')
+    address = address.strip()
+    if "exist" in address:
+        log.warn("motion_start has failed - tun0 doesn't exist?")
+        exit(1)
+    sslcontext = ssl.create_default_context()
+    server = smtplib.SMTP_SSL("{{ motion_email_host }}", "{{ motion_email_host_port }}", context=sslcontext, source_address=(address, 0))
+    server.login("{{ motion_email_host_address }}", "{ os.getenv('MOTION_EMAIL_PASSWORD') }")
+    server.sendmail("{{ motion_email_host_address }}", "{{ motion_receiver_email_address }}", message.as_string())
+    server.quit()

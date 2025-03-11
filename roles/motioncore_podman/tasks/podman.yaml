@@ -16,7 +16,7 @@
         state: present
         force: true
         name: motion_email_secret
-        data: "{{ motion_email_pass }}"
+        data: "{{ motion_email_password }}"
   remote_user: core
   become: true
   become_user: motion_user

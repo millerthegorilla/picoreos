@@ -1,0 +1,24 @@
+- name: Complete templates
+  ansible.builtin.import_tasks: template.yaml
+- name: copy openvpn directory
+  ansible.builtin.copy:
+    src: "{{ role_path }}/files/openvpn/*"
+    dest: /etc/openvpn/
+    remote_src: yes
+  tags: nordvpn
+- name: copy systemd service
+  ansible.builtin.copy:
+    src: "{{ role_path }}/files/systemd/system/openvpn_rand.service"
+    dest: /etc/systemd/system/
+  tags: nordvpn
+- name: Apply SELinux file context to openvpn
+  ansible.builtin.command: restorecon -irv /etc/openvpn
+- name: Apply SELinux file context to systemd file
+  ansible.builtin.command: restorecon -iv /etc/systemd/system/openvpn_rand.service
+- name: Enable and start openvpn_rand service
+  ansible.builtin.systemd:
+    name: openvpn_rand
+    enabled: yes
+    state: started
+  tags: nordvpn
+

@@ -1,4 +1,4 @@
 # string for rpm-ostree command in raw module
-fedora_version: 38
+fedora_version: 41
 rpmfusion_rpm_url: https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-{{ fedora_version }}.noarch.rpm
 ansible_required_packages: python python3-libselinux python3-rpm python3-firewall

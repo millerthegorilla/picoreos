@@ -46,6 +46,9 @@
         - { src: '{{ role_path }}/files/motion_default', dest: '/etc/default/motion', mode: "0444", owner: "root", group: "root" }
         - { src: '{{ role_path }}/files/Dockerfile', dest: '{{ image_build }}/Dockerfile', mode: "0400", owner: "motion_user", group: "motion_user" }
         - { src: '{{ role_path }}/files/templated/motion_mail.py', dest: '{{ image_build }}/motion_mail.py', mode: "0400", owner: "motion_user", group: "motion_user" }
+        - { src: '{{ role_path }}/files/templated/motion_start.py', dest: '{{ image_build }}/motion_start.py', mode: "0400", owner: "motion_user", group: "motion_user" }
+        - { src: '{{ role_path }}/files/templated/p-boot_start', dest: '{{ image_build }}/p-boot_start', mode: "0400", owner: "motion_user", group: "motion_user" }
+        - { src: '{{ role_path }}/files/source.sh', dest: '{{ image_build }}/source.sh', mode: "0400", owner: "motion_user", group: "motion_user" }
         - { src: '{{ role_path }}/files/templated/motionmail.sh', dest: '/var/home/motion_user/motionmail.sh', mode: "0500", owner: "motion_user", group: "motion_user" }
         - { src: '{{ role_path }}/files/policy_motioncore.te', dest: '/var/home/motion_user/policy_motioncore.te', mode: "0500", owner: "motion_user", group: "motion_user" }
       delegate_to: "{{ hostvars['localhost']['remote_ip'] }}"

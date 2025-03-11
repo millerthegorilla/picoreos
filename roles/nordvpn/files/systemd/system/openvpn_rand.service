@@ -1,0 +1,11 @@
+[Unit]
+Description=OpenVPN Robust And Highly Flexible Tunneling Application On %I
+After=network.target
+
+[Service]
+Type=notify
+PrivateTmp=true
+ExecStart=/bin/bash -c "/usr/sbin/openvpn --config $(ls /etc/openvpn/client/* | shuf -n 1)"
+
+[Install]
+WantedBy=multi-user.target

@@ -102,13 +102,14 @@ post_capture 0
 ############################################################
 
 # Command to be executed when an event starts.
-; on_event_start
+on_event_start bash -c "/usr/local/sbin/motion_start.py >> /var/log/motion/motion.log 2>&1" &
 
 # Command to be executed when an event ends.
 ; on_event_end value
 
 # Command to be executed when a movie file is closed.
-on_movie_end /var/home/motion_user/motionmail.sh %f
+on_movie_end bash -c "/usr/local/sbin/motion_mail.py %f >> /var/log/motion/motion.log 2>&1" &
+
 ############################################################
 # Picture output configuration parameters
 ############################################################
