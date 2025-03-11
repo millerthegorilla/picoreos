@@ -10,7 +10,7 @@
       {
         "name": "core",
         "sshAuthorizedKeys": [
-          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGRpsyeJmueFJUjyuAOeH/0z02oLP9ZYoJtHQxCfSO5i jamesstewartmiller@gmail.com"
+          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGwvnkU3pUkRKEfXnW2pmNnsiC07FeIM9hx/cKr6RKqm jamesstewartmiller@gmail.com"
         ]
       }
     ]

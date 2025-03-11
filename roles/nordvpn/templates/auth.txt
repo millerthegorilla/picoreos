@@ -1,1 +1,0 @@
-{{ openvpn_auth_txt }}

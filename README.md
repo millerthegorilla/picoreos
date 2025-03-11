@@ -2,6 +2,9 @@
 provisioning for coreos rpi4 motion webcam server
 mit license
 
+# dependencies
+  python3-rpm
+
 ansible-vault encrypt_string --ask-vault-pass 'gmail_password_here' --name 'motion_email_password'
 
 .env contents
@@ -12,5 +15,3 @@ MOTION_EMAIL_PASSWORD="\\\$ANSIBLE_VAULT;1.1;AES256\n39653...\n....\n65353464356
 ```
 
 Todo -- make a vault file for the motion_email_password
-
-gojgtefarahebvgg

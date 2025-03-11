@@ -5,3 +5,4 @@
     owner: "{{ lookup('env', 'USER') }}"
     group: "{{ lookup('env', 'USER') }}"
     mode: '0400'
+  delegate_to: localhost

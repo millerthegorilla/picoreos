@@ -3,5 +3,5 @@
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 [[ -d /tmp/FCOSEFIpart ]] && rm -rf /tmp/FCOSEFIpart
-FCOSDISK=/dev/sda
+FCOSDISK=/dev/sdb
 sudo coreos-installer install --architecture=aarch64 -s stable -i ${SCRIPT_DIR}/config.ign $FCOSDISK

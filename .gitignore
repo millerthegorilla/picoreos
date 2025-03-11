@@ -3,3 +3,4 @@
 .motioncore_venv/*
 .env
 .env/*
+roles/nordvpn/files/openvpn/auth.txt
