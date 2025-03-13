@@ -41,9 +41,9 @@
       loop:
         - { src: '{{ role_path }}/files/fail2ban.conf', dest: '/etc/fail2ban/fail2ban.conf', mode: "0640", owner: root, group: root }
         - { src: '{{ role_path }}/files/templated/sshd.conf', dest: '/etc/fail2ban/jail.d/sshd.conf', mode: "0640", owner: "root", group: "root" }
-        - { src: '{{ role_path }}/files/templated/motion.conf', dest: '/etc/motion/motion.conf', mode: "0640", owner: "root", group: "video" }
+        - { src: '{{ role_path }}/files/templated/motion.conf', dest: '{{ image_build }}/motion.conf', mode: "0640", owner: "root", group: "video" }
         - { src: '{{ role_path }}/files/custom_motion.service', dest: '/var/home/motion_user/.config/systemd/user/custom_motion.service', mode: "0644", owner: "motion_user", group: "motion_user" }
-        - { src: '{{ role_path }}/files/motion_default', dest: '/etc/default/motion', mode: "0444", owner: "root", group: "root" }
+       # - { src: '{{ role_path }}/files/motion_default', dest: '/etc/default/motion', mode: "0444", owner: "root", group: "root" }
         - { src: '{{ role_path }}/files/Dockerfile', dest: '{{ image_build }}/Dockerfile', mode: "0400", owner: "motion_user", group: "motion_user" }
         - { src: '{{ role_path }}/files/templated/motion_mail.py', dest: '{{ image_build }}/motion_mail.py', mode: "0400", owner: "motion_user", group: "motion_user" }
         - { src: '{{ role_path }}/files/templated/motion_start.py', dest: '{{ image_build }}/motion_start.py', mode: "0400", owner: "motion_user", group: "motion_user" }

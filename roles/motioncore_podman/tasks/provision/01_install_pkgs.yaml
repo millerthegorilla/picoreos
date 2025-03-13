@@ -15,7 +15,8 @@
   register: pkg_out
   delegate_to: "{{ hostvars['localhost']['remote_ip'] }}"
 - debug: var=pkg_out
-- name: store pkg_out
+- name: store pkg_out changed bool
   ansible.builtin.set_fact: 
-    pkg_out: pkg_out 
+    pkgs_changed: "{{ pkg_out.changed }}" 
     cacheable: true
+  delegate_to: "{{ hostvars['localhost']['remote_ip'] }}"

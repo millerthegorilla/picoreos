@@ -9,13 +9,13 @@
          && /usr/sbin/semodule -i policy_motioncore.pp
          && rm -rf policy_motioncore*
    - name: Mask motion.service
-     ansible.builtin.systemd:
+     ansible.builtin.systemd_service:
        name: motion.service
        masked: true
        enabled: false
        state: stopped
    - name: Start fail2ban.service
-     ansible.builtin.service:
+     ansible.builtin.systemd_service:
        name: fail2ban.service
        enabled: true
        state: started
@@ -26,7 +26,7 @@
   become_method: sudo
 - block:
     - name: Start motion.service
-      ansible.builtin.systemd:
+      ansible.builtin.systemd_service:
         name: custom_motion
         enabled: true
         state: started

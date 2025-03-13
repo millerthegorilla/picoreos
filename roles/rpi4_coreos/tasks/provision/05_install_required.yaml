@@ -1,17 +1,41 @@
 - name: >-
-   Install needed packages using the raw module
+   Install openvpn
    ** Takes a long time! (rpm-ostree install) **
-  ansible.builtin.raw: >-
-    sudo rpm-ostree --idempotent install {{ rpmfusion_rpm_url + ' ' + ansible_required_packages }}
+  community.general.rpm_ostree_pkg:
+    name: {{ rpmfusion_rpm_url + ' ' + ansible_required_packages }}
+    state: present
+  remote_user: core
+  become: yes
+  become_user: root
+  become_method: sudo
+  register: openvpn_installed
   delegate_to: "{{ hostvars['localhost']['remote_ip'] }}"
+# - name: >-
+#    Install needed packages using the raw module
+#    ** Takes a long time! (rpm-ostree install) **
+#   ansible.builtin.raw: >-
+#     sudo rpm-ostree --idempotent install {{ rpmfusion_rpm_url + ' ' + ansible_required_packages }}
+#   delegate_to: "{{ hostvars['localhost']['remote_ip'] }}"
 - name: Reboot
-  ansible.builtin.raw: systemd-run --on-active=5 shutdown -r now
+  ansible.builtin.reboot:
+    msg: "Rebooting to install packages"
+    delay: 5
+    pre_reboot_delay: 300
+  remote_user: core
+  become: yes
+  become_user: root
+  become_method: sudo
   delegate_to: "{{ hostvars['localhost']['remote_ip'] }}"
-- name: Pause for 60 seconds
-  ansible.builtin.pause:
-    seconds: 60
-- name: Wait for SSH to be up
-  local_action: wait_for
-                host="{{ hostvars['localhost']['remote_ip'] }}"
-                port=22
-                state=started
+  when: openvpn_installed.changed"
+
+
+#   ansible.builtin.raw: systemd-run --on-active=5 shutdown -r now
+#   delegate_to: "{{ hostvars['localhost']['remote_ip'] }}"
+# - name: Pause for 60 seconds
+#   ansible.builtin.pause:
+#     seconds: 60
+# - name: Wait for SSH to be up
+#   local_action: wait_for
+#                 host="{{ hostvars['localhost']['remote_ip'] }}"
+#                 port=22
+#                 state=started
