@@ -13,10 +13,6 @@
     remote_ip: "{{ command_output.user_input }}" 
     cacheable: true
   when: remote_ip is not defined or remote_ip == ""
-- name: Add host
-  ansible.builtin.add_host:
-    name: "{{ remote_ip }}"
-    group: "motioncore"
 - name: Remove host from known_hosts
   ansible.builtin.shell:
     cmd: ssh-keygen -R {{ remote_ip }}

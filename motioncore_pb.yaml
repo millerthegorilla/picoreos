@@ -12,9 +12,12 @@
   become: yes
   become_method: sudo
   tasks:
+    - name: print hostname
+      ansible.builtin.debug:
+        msg: "{{ ansible_facts.remote_hostname }}"
     - name: set hostname of remote
       ansible.builtin.hostname:
-        name: "{{ hostvars['localhost']['remote_hostname'] }}"
+        name: "{{ ansible_facts.remote_hostname }}"
         delegate_to: "{{ hostvars['localhost']['remote_ip'] }}"
 - hosts: "{{ hostvars['localhost']['remote_ip'] }}"
   gather_facts: true
