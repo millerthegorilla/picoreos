@@ -1,87 +1,119 @@
 ---
 - hosts: localhost
-  gather_facts: false
+  gather_facts: true
   remote_user: core
   roles:
-#    - role: rpi4_coreos
+    - role: rpi4_coreos
+      when: "rpi4_coreos_provision_disk in ansible_mounts"
     - role: get_set_ip
 - hosts: "{{ hostvars['localhost']['remote_ip'] }}"
+  gather_facts: true
   remote_user: core
+  become: yes
+  become_method: sudo
+  tasks:
+    - name: set hostname of remote
+      ansible.builtin.hostname:
+        name: "{{ hostvars['localhost']['remote_hostname'] }}"
+        delegate_to: "{{ hostvars['localhost']['remote_ip'] }}"
+- hosts: "{{ hostvars['localhost']['remote_ip'] }}"
+  gather_facts: true
+  remote_user: core
+  become: yes
+  become_method: sudo
   roles:
-    # - role: nordvpn
-    #   vars:
-    #     openvpn_auth_txt_upper: !vault |
-    #       $ANSIBLE_VAULT;1.1;AES256
-    #       30356239336663323737323661613237336131643664306231316263323439396330393861386366
-    #       6166333065336561353035393633626538666630616263350a303066313866333534343863636133
-    #       37613130353761383062363264376535386337663666326563633263336134393530396463616462
-    #       3730646130656437370a653434323037656365633564383232353837313265313039653730346465
-    #       39353338366334336635666166303961326535656565636231633639306438663164
-    #     openvpn_auth_txt_lower: !vault |
-    #       $ANSIBLE_VAULT;1.1;AES256
-    #       37343364336161333235343133396130306663363363613938613732376139373165393539323535
-    #       3039646539303162316663643338353764356530656161360a656136383038303566346430616331
-    #       36656432646638313565333132633239353130653838306165356237623666373838386564636532
-    #       3264383162393332310a343731393334306630353932643330363261316465356636613263616437
-    #       63333964333564353639376131376637613261383239343832356364663165663163
-#     - role: motioncore_podman
-#       vars:
-#         motioncore_ip: "{{ hostvars['localhost']['remote_ip'] }}"
-#         ansible_become_password: !vault |
-#           $ANSIBLE_VAULT;1.1;AES256
-#           39343038313763373539336338383332366437383138346564623531393532366430363162666337
-#           6432613236386662356661663635313962613138656263310a356463643262633631323430373464
-#           66326439333439333031383033636264326263623465323264343237323832393434313534313365
-#           3432376438383332640a616335653334663762356664316135336566323531653938666432343839
-#           36343365313861306538336264613139333832633061333865373539386433623765
+    - role: devsec.hardening.os_hardening
+      vars:
+        os_auditd_enabled: false
+        os_immutable_fs: true
+        os_ignore_users: 
+          - os_ignore_users
+          - 'adm'
+          - 'avahi-autoipd'
+          - 'bin'
+          - 'ceph'
+          - 'chrony'
+          - 'cockpit-ws'
+          - 'daemon'
+          - 'dbus'
+          - 'dockerroot'
+          - 'etcd'
+          - 'ftp'
+          - 'games'
+          - 'kube'
+          - 'lp'
+          - 'mail'
+          - 'nobody'
+          - 'operator'
+          - 'polkitd'
+          - 'rpc'
+          - 'rpcuser'
+          - 'sshd'
+          - 'sssd'
+          - 'systemd-bus-proxy'
+          - 'systemd-network'
+          - 'systemd-resolve'
+          - 'systemd-timesync'
+          - 'tcpdump'
+          - 'tss'
+          - 'clevis'
+          - 'dnsmasq'
+          - 'zincati'
+          - 'systemd-coredump'
+          - 'systemd-oom'
+          - 'usbmuxd'
+        ansible_become_password: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          39343038313763373539336338383332366437383138346564623531393532366430363162666337
+          6432613236386662356661663635313962613138656263310a356463643262633631323430373464
+          66326439333439333031383033636264326263623465323264343237323832393434313534313365
+          3432376438383332640a616335653334663762356664316135336566323531653938666432343839
+          36343365313861306538336264613139333832633061333865373539386433623765
+    - role: devsec.hardening.ssh_hardening
+    - role: nordvpn
+      vars:
+        openvpn_auth_txt_upper: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          30356239336663323737323661613237336131643664306231316263323439396330393861386366
+          6166333065336561353035393633626538666630616263350a303066313866333534343863636133
+          37613130353761383062363264376535386337663666326563633263336134393530396463616462
+          3730646130656437370a653434323037656365633564383232353837313265313039653730346465
+          39353338366334336635666166303961326535656565636231633639306438663164
+        openvpn_auth_txt_lower: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          37343364336161333235343133396130306663363363613938613732376139373165393539323535
+          3039646539303162316663643338353764356530656161360a656136383038303566346430616331
+          36656432646638313565333132633239353130653838306165356237623666373838386564636532
+          3264383162393332310a343731393334306630353932643330363261316465356636613263616437
+          63333964333564353639376131376637613261383239343832356364663165663163
 # - hosts: "{{ hostvars['localhost']['remote_ip'] }}"
 #   remote_user: core
 #   become: yes
-#   roles:
-#     - role: devsec.hardening.os_hardening
-#       vars:
-#         os_auditd_enabled: false
-#         os_immutable_fs: true
-#         ansible_become_password: !vault |
-#           $ANSIBLE_VAULT;1.1;AES256
-#           39343038313763373539336338383332366437383138346564623531393532366430363162666337
-#           6432613236386662356661663635313962613138656263310a356463643262633631323430373464
-#           66326439333439333031383033636264326263623465323264343237323832393434313534313365
-#           3432376438383332640a616335653334663762356664316135336566323531653938666432343839
-#           36343365313861306538336264613139333832633061333865373539386433623765
-- hosts: "{{ hostvars['localhost']['remote_ip'] }}"
-  remote_user: core
-  become: yes
-  roles:
-    - role: devsec.hardening.ssh_hardening
-- hosts: "{{ hostvars['localhost']['remote_ip'] }}"
-  remote_user: core
-  become: yes
-  tasks: # the tasks are specific to the "{{ hostvars['localhost']['remote_ip'] }}"_podman role.
-    - name: Remove python
-      become: true
-      become_user: root
-      community.general.rpm_ostree_pkg:
-        name: "{{ ansible_required_packages }}"
-        state: absent
-      delegate_to: "{{ remote_ip }}"
+#   tasks: # the tasks are specific to the "{{ hostvars['localhost']['remote_ip'] }}"_podman role.
+#     - name: Remove python
+#       become: true
+#       become_user: root
+#       community.general.rpm_ostree_pkg:
+#         name: "{{ ansible_required_packages }}"
+#         state: absent
+#       delegate_to: "{{ remote_ip }}"
     # - name: Set motion_user shell
     #   become: true
     #   become_user: root
     #   ansible.builtin.shell:
     #     cmd: sudo usermod motion_user -s /sbin/nologin
     #   delegate_to: "{{ remote_ip }}"
-    - name: Reboot remote and wait for it to restart
-      become: true
-      become_user: root
-      ansible.builtin.reboot:
-        msg: "Reboot initiated by Ansible"
-        connect_timeout: 5
-        reboot_timeout: 600
-        pre_reboot_delay: 0
-        post_reboot_delay: 5
-        test_command: whoami
-      delegate_to: "{{ remote_ip }}"
+    # - name: Reboot remote and wait for it to restart
+    #   become: true
+    #   become_user: root
+    #   ansible.builtin.reboot:
+    #     msg: "Reboot initiated by Ansible"
+    #     connect_timeout: 5
+    #     reboot_timeout: 600
+    #     pre_reboot_delay: 0
+    #     post_reboot_delay: 5
+    #     test_command: whoami
+    #   delegate_to: "{{ remote_ip }}"
 
 # # set remote_ip in vars/main.yaml and run following command for non interactive run
 # # if you know what the ip address will be and want to avoid ssh_known check (insecure!)

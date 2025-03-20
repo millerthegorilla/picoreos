@@ -10,17 +10,27 @@
   become_method: sudo
   register: openvpn_installed
   delegate_to: "{{ hostvars['localhost']['remote_ip'] }}"
-- name: Reboot
-  ansible.builtin.reboot:
-    msg: "Rebooting to install packages"
-    delay: 5
-    pre_reboot_delay: 300
+- name: Add openvpn group (getent issue https://github.com/coreos/rpm-ostree/issues/49#issuecomment-478091562)
+  ansible.builtin.shell:
+    cmd: grep "openvpn:x:975:" /etc/group && echo "already in openvpn group" || echo "openvpn:x:975:" >> /etc/group
   remote_user: core
   become: yes
   become_user: root
   become_method: sudo
+  register: openvpn_group_out
   delegate_to: "{{ hostvars['localhost']['remote_ip'] }}"
-  when: openvpn_installed.changed
+- name: Reboot
+  ansible.builtin.reboot:
+    msg: "Rebooting to install packages"
+    pre_reboot_delay: 0
+  remote_user: core
+  become: yes
+  become_user: root
+  become_method: sudo
+  delegate_to: "motioncore.local" # "{{ hostvars['localhost']['remote_ip'] }}"
+  when: >- 
+      openvpn_installed.needs_reboot 
+      or "already in openvpn group" not in openvpn_group_out.stdout_lines 
 # - name: Reboot
 #   ansible.builtin.raw: systemd-run --on-active=5 shutdown -r now
 #   delegate_to: "{{ hostvars['localhost']['remote_ip'] }}"
@@ -41,9 +51,9 @@
   ansible.builtin.synchronize:
     src: "{{ role_path }}/files/openvpn/"
     dest: /etc/openvpn/
-    owner: root
-    group: openvpn
-  remote_user: root
+    owner: false
+    group: false
+  remote_user: core
   become: yes
   become_user: root
   become_method: sudo

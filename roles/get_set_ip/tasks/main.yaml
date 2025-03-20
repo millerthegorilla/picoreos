@@ -18,9 +18,6 @@
     remote_ip: "{{ remote_ip }}" 
     cacheable: true
   when: remote_ip is defined
-- name: set hostname of remote
-  ansible.builtin.hostname:
-    name: "{{ remote_hostname }}"
 - name: Add host
   ansible.builtin.add_host:
     name: '{{ remote_ip }}'

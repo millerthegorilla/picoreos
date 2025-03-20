@@ -19,3 +19,7 @@
   # Provision the microsd card and setup the machine
 - name: Provision machine
   ansible.builtin.import_tasks: provision.yaml
+- name: set hostname of remote
+  ansible.builtin.hostname:
+    name: "{{ hostvars['localhost']['remote_hostname'] }}"
+  delegate_to: "{{ hostvars['localhost']['remote_ip'] }}"

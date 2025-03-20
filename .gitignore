@@ -1,4 +1,5 @@
 **/files/templated/*
+templated/*
 .motioncore_venv
 .motioncore_venv/*
 .env

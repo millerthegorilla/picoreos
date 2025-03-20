@@ -3,8 +3,10 @@ provisioning for coreos rpi4 motion webcam server
 mit license
 
 # dependencies
-  python3-rpm
-
+  python3-rpm on the host and pip install rpm in the prefix.
+# optional
+  coreos-installer
+  
 ansible-vault encrypt_string --ask-vault-pass 'gmail_password_here' --name 'motion_email_password'
 
 .env contents

@@ -1,2 +1,2 @@
-local_network: 192.168.200.5/24
+local_network: 192.168.1.1/24
 fail2ban_whitelist_ip: 127.0.0.1/8 {{ local_network }}
