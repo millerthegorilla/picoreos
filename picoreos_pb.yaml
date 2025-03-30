@@ -26,7 +26,7 @@
         rpi4_coreos_provision_disk: "sdb"
         rpi4_coreos_ssh_path: '~/.ssh/id_ed25519.pub'
 - name: Provision CoreOS on Raspberry Pi 4
-  hosts: motioncore_hosts:dynamically_created_hosts
+  hosts: picoreos_hosts:dynamically_created_hosts
   gather_facts: false
   remote_user: core
   pre_tasks:
@@ -44,7 +44,7 @@
       #     6239383537316262300a326439653764643539383832636238373164313464306331663230383537
       #     6361
 - name: Harden server
-  hosts: motioncore_hosts:dynamically_created_hosts
+  hosts: picoreos_hosts:dynamically_created_hosts
   remote_user: core
   become: true
   become_method: sudo
@@ -101,7 +101,7 @@
       vars:
         os_immutable_fs: true
 # - name: Add VPN
-#   hosts: motioncore_hosts:dynamically_created_hosts
+#   hosts: picoreos_hosts:dynamically_created_hosts
 #   gather_facts: true
 #   remote_user: core
 #   become: true

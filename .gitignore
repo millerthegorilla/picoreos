@@ -1,12 +1,11 @@
 **/files/templated/*
 templated/*
-.motioncore_venv
-.motioncore_venv/*
+.picoreos_venv
+.picoreos_venv/*
 .env
 .env/*
 roles/nordvpn/files/openvpn/auth.txt
-inventory/*
-inventory
+inventory/picoreos.yaml
 .vscode/*
 .vscode
 .ansible/*

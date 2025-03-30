@@ -9,7 +9,7 @@
   become_user: root
   become_method: ansible.builtin.sudo
   register: openvpn_installed
-  delegate_to: motioncore:dynamically_created_hosts
+  delegate_to: picoreos:dynamically_created_hosts
 - name: Add openvpn group
   ansible.builtin.group:
     name: openvpn
@@ -18,7 +18,7 @@
   become: true
   become_user: root
   become_method: ansible.builtin.sudo
-  delegate_to: motioncore:dynamically_created_hosts
+  delegate_to: picoreos:dynamically_created_hosts
 - name: End play
   ansible.builtin.meta: end_play
 # - name: Add openvpn group # (getent issue https://github.com/coreos/rpm-ostree/issues/49#issuecomment-478091562)
