@@ -4,17 +4,17 @@ This repository provides a set of ansible roles to provision a coreos rpi4 serve
 
 To get started you will need to create a playbook that calls the roles.  An example playbook is included as picoreos_pb.yaml
 
-# license
+## license
   mit license
 
-# dependencies
+## dependencies
   create a new python virtual environment and install ansible, python3-rpm on the host and pip install rpm in the prefix.
   Tested using Fedora Silverblue as a control node.
 
-# optional
+## optional
   you can layer/install coreos-installer and ansible will use it.  If it doesn't find it, it uses a version inside a container instead.
 
-# configuration
+## configuration
   You will need to configure an inventory with the following groups and variables:
 ```
 ungrouped:
@@ -49,7 +49,14 @@ ansible-vault encrypt_string --ask-vault-pass 'password_here'
 ```
 The vault password that you are prompted for will be entered on the command line.
 
-# command line
+## command line
 ```
 ansible-playbook -i inventory --ask-vault-password picoreos_pb.yml
+```
+
+## devsec_hardening
+Picoreos ansible scripts use a modified version of devsec_hardening - os_hardening and ssh_hardening.  These have been modified to allow them to work with systems that have an immutable filesystem
+In order to install the collection you will need the following command, inside your virtual environment...
+```
+ansible-galaxy collection install git+https://github.com/millerthegorilla/ansible-collection-hardening.git,os_immutable_fs
 ```
