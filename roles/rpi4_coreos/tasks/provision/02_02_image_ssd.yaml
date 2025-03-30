@@ -5,7 +5,7 @@
       --privileged --rm -v /dev:/dev
       -v /run/udev:/run/udev
       -v {{ role_path }}/files/templated:/data -w /data quay.io/coreos/coreos-installer:release
-      install {{ rpi4_coreos_provision_disk }}
+      install /dev/{{ rpi4_coreos_provision_disk }}
       --architecture aarch64
       -s stable
       -i /data/config.ign

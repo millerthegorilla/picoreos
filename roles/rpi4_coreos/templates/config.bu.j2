@@ -8,6 +8,7 @@ ignition:
 passwd:
   users:
     - name: core
+      password_hash: $y$j9T$5R89xut7Ilr2rX3kjVoX3/$0UGXQsVjZ.XJPpxeNXd6Bx9da5fhfCjrO0Xf1qzZeaB
       ssh_authorized_keys:
         - "{{ rpi4_coreos_user_ssh_authorized_key }}"
 storage:
@@ -36,16 +37,25 @@ storage:
       label: var
       wipe_filesystem: true
       with_mount_unit: true
+  files:
+    - path: /etc/hostname
+      overwrite: true
+      contents:
+        inline: motioncore
+      mode: 0644
+    - path: /etc/hosts
+      overwrite: true
+      contents:
+        inline: 127.0.0.1 motioncore.lan motioncore localhost
+      mode: 0644
 
 # variant: fcos
 # version: 1.4.0
 # storage:
-# 
+#
 #   filesystems:
 #     - path: /var/lib/data
 #       device: /dev/mapper/data
 #       format: xfs
 #       label: DATA
 #       with_mount_unit: true
-
-

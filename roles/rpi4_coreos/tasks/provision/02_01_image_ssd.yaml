@@ -2,3 +2,4 @@
   ansible.builtin.shell:
     cmd: "{{ role_path }}/files/templated/provision_image.sh"
     executable: "/bin/bash"
+    creates: "/path/to/created/file"

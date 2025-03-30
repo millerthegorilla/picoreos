@@ -1,8 +1,0 @@
-#!/bin/bash
-
-MOTION_FILE_NAME=$(basename ${1});
-
-/usr/bin/podman unshare chown 1000:1000 -R ./files;
-/usr/bin/podman run -it --name python_motion --user 1000 -v /var/lib/motion:/var/home/motioncore/motion_files:Z -e MOTION_FILE_PATH="/var/home/motioncore/motion_files/${MOTION_FILE_NAME}" --secret motion_email_secret,type=env,target=MOTION_EMAIL_PASSWORD motioncore:latest 2>&1 >> /var/log/custom_motion.log;
-/usr/bin/podman rm python_motion;
-/usr/bin/podman unshare chown root:root -R ./files;

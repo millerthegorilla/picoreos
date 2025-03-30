@@ -1,0 +1,13 @@
+- name: Create file template
+  vars:
+    template_user: "{{ lookup('env', 'USER') }}"
+  ansible.builtin.template:
+    src: "{{ item.src }}"
+    dest: "{{ role_path }}/files/templated/{{ item.dest }}"
+    mode: "{{ item.mode }}"
+    setype: "container_file_t"
+    owner: "{{ item.owner | default(template_user) }}"
+    group: "{{ item.group | default(template_user) }}"
+  loop:
+    - { src: 'config.bu.j2', dest: 'config.bu', mode: "0640" }
+    - { src: 'provision_image.sh.j2', dest: 'provision_image.sh', mode: "0750" }

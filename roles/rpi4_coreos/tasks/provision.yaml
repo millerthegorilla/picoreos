@@ -4,11 +4,11 @@
   # run script to install coreos to microsd card
   # if coreos-installer is installed (fedora only)
 - name: Install to microsd if coreos-installer is present
-  ansible.builtin.include_tasks: 
+  ansible.builtin.include_tasks:
     file: provision/02_01_image_ssd.yaml
     apply:
       become: true
-      become_method: sudo
+      become_method: ansible.builtin.sudo
   when: "'coreos-installer' in local_pkgs.ansible_facts.packages"
   # install coreos to microsd card using container
   # (other distros ie when coreos-installer is not installed)
@@ -18,27 +18,12 @@
     file: provision/02_02_image_ssd.yaml
     apply:
       become: true
-      become_method: sudo
+      become_method: ansible.builtin.sudo
   when: "'coreos-installer' not in local_pkgs.ansible_facts.packages"
   # install firmware to microsd card
 - name: Install firmware
-  ansible.builtin.include_tasks: 
+  ansible.builtin.include_tasks:
     file: provision/03_install_firmware.yaml
     apply:
       become: true
-      become_method: sudo
-  # obtain ip address of remote host from user and set fact
-- name: Get and set remote ip
-  ansible.builtin.include_tasks: 
-    file: provision/04_get_set_ip.yaml
-  # install python and rpm-fusion repo and reboot
-- name: Install python etc and reboot
-  ansible.builtin.include_tasks: 
-    file: provision/05_install_required.yaml
-    apply:
-      remote_user: core
-      become: yes
-      become_user: root
-      become_method: sudo
-# - name: flush handlers
-#   meta: flush_handlers
+      become_method: ansible.builtin.sudo

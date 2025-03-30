@@ -1,7 +1,0 @@
-# Sample dot env file.  All email parameters passed to the script that mails the new video are placed here
-# All parameters must be present for the script to work.  The .env file is placed in the project root, at
-# the same level as the root playbook.
-MOTION_EMAIL_HOST_PORT="465"  # EMAIL IS SENT VIA SSL ON PORT 465 https://security.stackexchange.com/a/161925
-MOTION_EMAIL_HOST="smtp.gmail.com" # EMAIL IS SENT VIA SMTP GMAIL
-MOTION_EMAIL_SENDER="MotionCoreCamera@gmail.com" # DUMMY SENDER, NOT SEEN IN EMAIL CURRENTLY BUT MUST BE PRESENT
-MOTION_EMAIL_RECEIVER="jamesstewartmiller@gmail.com" # TO WHOM THE EMAIL IS SENT

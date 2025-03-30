@@ -1,4 +1,4 @@
 {
-    "ansible.python.interpreterPath": "/var/home/dev/Src/motioncore/.venv/bin/python",
-    "python.terminal.activateEnvInCurrentTerminal": true
+    "python.terminal.activateEnvInCurrentTerminal": true,
+    "ansible.python.interpreterPath": "/var/home/james/src/motioncore/.motioncore_venv/bin/python"
 }

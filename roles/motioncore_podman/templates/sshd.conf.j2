@@ -1,8 +1,0 @@
-[sshd]
-enabled   = true
-filter    = sshd
-backend   = systemd
-maxretry  = 5
-findtime  = 1d
-bantime   = 2w
-ignoreip  = {{ fail2ban_whitelist_ip }}

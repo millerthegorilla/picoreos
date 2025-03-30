@@ -5,3 +5,9 @@ templated/*
 .env
 .env/*
 roles/nordvpn/files/openvpn/auth.txt
+inventory/*
+inventory
+.vscode/*
+.vscode
+.ansible/*
+.ansible

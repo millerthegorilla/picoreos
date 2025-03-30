@@ -1,6 +1,3 @@
----
 - name: Install firmware
-  ansible.builtin.shell: 
-    cmd: "{{ role_path }}/files/provision_firmware.sh {{ rpi4_coreos_provision_disk }}"
-  register: install_out
-- debug: var=install_out
+  ansible.builtin.shell:
+    cmd: "{{ role_path }}/files/provision_firmware.sh /dev/{{ rpi4_coreos_provision_disk }}"

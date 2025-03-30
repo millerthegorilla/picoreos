@@ -1,3 +1,3 @@
-ssh_path: '~/.ssh/id_ed25519.pub'
-rpi4_coreos_user_ssh_authorized_key: "{{lookup('ansible.builtin.file', ssh_path) }}"
-rpi4_coreos_provision_disk: /dev/sdb
+rpi4_coreos_ssh_path: ""
+rpi4_coreos_user_ssh_authorized_key: "{{ lookup('ansible.builtin.file', rpi4_coreos_ssh_path) }}"
+rpi4_coreos_provision_disk: ""
