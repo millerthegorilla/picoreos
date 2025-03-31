@@ -1,3 +1,6 @@
+- debug:
+    var: rpi4_coreos_provision_disk
+
 - name: Get local packages for later conditional test for coreos-installer
   ansible.builtin.package_facts:
     manager: auto

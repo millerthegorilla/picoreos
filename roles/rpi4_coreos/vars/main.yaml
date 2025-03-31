@@ -1,3 +1,1 @@
-rpi4_coreos_ssh_path: ""
 rpi4_coreos_user_ssh_authorized_key: "{{ lookup('ansible.builtin.file', rpi4_coreos_ssh_path) }}"
-rpi4_coreos_provision_disk: ""
