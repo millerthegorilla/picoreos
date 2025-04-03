@@ -71,7 +71,7 @@
     - role: devsec.hardening.ssh_hardening
       tags: [ devsec, devsec_ssh_hardening ]
       vars:
-        os_immutable_fs: true
+        ssh_immutable_fs: true
         ssh_authorized_keys_file: '.ssh/authorized_keys.d/ignition'
 - name: Add VPN
   hosts: picoreos_hosts

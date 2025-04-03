@@ -1,4 +1,4 @@
-- name: Check package exists
+- name: Gather package facts
   ansible.builtin.package_facts:
 
 - name: >-
@@ -8,7 +8,7 @@
     name: openvpn
     state: present
   register: openvpn_installed
-  when: not ansible_facts.packages.openvpn
+  when: '"openvpn" not in ansible_facts.packages'
 
 - name: Add openvpn group
   ansible.builtin.group:

@@ -4,6 +4,16 @@ This repository provides a set of ansible roles to provision a coreos rpi4 serve
 
 To get started you will need to create a playbook that calls the roles.  An example playbook is included as picoreos_pb.yaml
 
+## roles
+The following roles are run for a complete install:
+- rpi4_coreos            uses coreos-installer to install the latest firmware and the coreos fedora version that you
+                         define as 'fedora_version'
+- req_install            installs the packages that are required for ansible to work on coreos
+- devsec_os_hardening    a modified fork of [devsec_os_hardening](#devsec_hardening)
+- devsec_ssh_hardening   a modified fork of [devsec_ssh_hardening](#devsec_hardening)
+- nordvpn                openvpn install of nordvpn configured to connect to random uk vpn server on boot
+- server_hardening       to come... fail2ban and some other bits and pieces
+
 <b>MAKE CERTAIN</b> that the disk name is correct in the [variables](#variables) for the rpi4_coreos role.
 The rpi4_coreos role is a destructive operation and will overwrite anything that is on the target disk.
 
@@ -142,10 +152,18 @@ devsec_os_hardening   allows you to skip devsec.os_hardening
 devsec_ssh_hardening  allows you to skip devsec.ssh_hardening
 nordvpn               allows you to skip the nordvpn role
 ```
+The collection of roles require the raspberry pi to reboot several times.  You can prevent the reboots
+using the following tags:
+```
+reboot                skips reboots everywhere except the nordvpn role which requires a reboot in order to
+                         start the service.
+reboot_rpi4           skips reboots in rpi4_coreos role
+reboot_req            skips reboots in req_install
+```
 
 ## devsec_hardening
-Picoreos ansible scripts use a modified version of devsec_hardening - os_hardening and ssh_hardening.
-These have been modified to allow them to work with systems that have an immutable filesystem
+Picoreos ansible scripts use a modified version of [devsec/ansible-collection-hardening](https://github.com/dev-sec/ansible-collection-hardening) - os_hardening and ssh_hardening.
+These have been modified to allow them to work with systems that have an immutable filesystem.
 In order to install the collection you will need the following command, inside your virtual environment...
 ```
 ansible-galaxy collection install git+https://github.com/millerthegorilla/ansible-collection-hardening.git,os_immutable_fs

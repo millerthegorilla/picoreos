@@ -8,6 +8,7 @@
     - provision_image.sh
   listen: "cleanup_handler"
   delegate_to: localhost
+
 - name: Reboot remote and wait for it to restart
   become: true
   ansible.builtin.reboot:
@@ -19,3 +20,4 @@
     test_command: whoami
   delegate_to: picoreos_hosts
   listen: "reboot_handler"
+  tags: [reboot, rpi4_reboot]

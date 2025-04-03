@@ -47,6 +47,8 @@
   ignore_errors: true
   tags: sudo_removal
 
+- debug: var=insudogrp
+
 - name: Remove user from sudo group
   ansible.builtin.raw: "sudo gpasswd -d {{ ansible_user }} sudo"
   when: insudogrp.failed is false
@@ -58,12 +60,17 @@
   ansible.builtin.raw: rpm-ostree db diff
   register: reboot_check
 
+- debug: var=reboot_check
+
 - name: Reboot if necessary
   ansible.builtin.raw: sudo systemd-run --on-active=5 shutdown -r now
-  when: >
-    (sudo_user_removed is defined and sudo_user_removed.changed != -1)
-    or (reboot_check.stdout.find('pending') != -1)
+  when: reboot_check.stdout.find('pending') != -1
   register: reboot
+  tags: [reboot, req_reboot]
+
+- meta: reset_connection
+  when: sudo_user_removed is defined and sudo_user_removed.changed != -1
+  tags: sudo_removal
 
 - name: Wait for ssh to be available
   ansible.builtin.wait_for_connection:
