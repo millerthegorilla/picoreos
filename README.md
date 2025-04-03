@@ -6,15 +6,15 @@ To get started you will need to create a playbook that calls the roles.  An exam
 
 ## roles
 The following roles are run for a complete install:
-```
-- rpi4_coreos            uses coreos-installer to install the latest firmware and the coreos fedora version that you
-                         define as 'fedora_version'
-- req_install            installs the packages that are required for ansible to work on coreos
-- devsec_os_hardening    a modified fork of [devsec_os_hardening](#devsec_hardening)
-- devsec_ssh_hardening   a modified fork of [devsec_ssh_hardening](#devsec_hardening)
-- nordvpn                openvpn install of nordvpn configured to connect to random uk vpn server on boot
-- server_hardening       to come... fail2ban and some other bits and pieces
-```
+
+- rpi4_coreos&emsp;&emsp;&emsp;uses coreos-installer to install the latest firmware and the coreos fedora version that you
+  &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;define as 'fedora_version'
+- req_install&emsp;&emsp;&emsp;installs the packages that are required for ansible to work on coreos
+- devsec_os_hardening&emsp;a modified fork of [devsec_os_hardening](#devsec_hardening)
+- devsec_ssh_hardening&emsp;a modified fork of [devsec_ssh_hardening](#devsec_hardening)
+- nordvpn&emsp;&emsp;&emsp;&emsp;openvpn install of nordvpn configured to connect to random uk vpn server on boot
+- server_hardening&emsp;&emsp;to come... fail2ban and some other bits and pieces
+
 <b>MAKE CERTAIN</b> that the disk name is correct in the [variables](#variables) for the rpi4_coreos role.
 The rpi4_coreos role is a destructive operation and will overwrite anything that is on the target disk.
 
