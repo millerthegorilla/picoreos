@@ -16,7 +16,8 @@ The following roles are run for a complete install:
 
 ## caveat!
 <b>MAKE CERTAIN</b> that the disk name is correct in the [variables](#variables) for the rpi4_coreos role.
-The rpi4_coreos role is a destructive operation and will overwrite anything that is on the target disk.
+
+The rpi4_coreos role is a <b>destructive operation</b> and will overwrite anything that is on the target disk.
 
 You will need to put the microssd card into a slot on your machine, and then define which disk name it is in the
 playbook as the variable to the rpi4_coreos role.  The rpi4_coreos role will run to install the latest coreos and
