@@ -1,0 +1,8 @@
+selinux set default
+
+install a penetration testing framework
+install an antivirus and schedule scan
+install vpn
+set core user shell to /sbin/nologin
+
+remember to add audit=1 to kernel parameters
