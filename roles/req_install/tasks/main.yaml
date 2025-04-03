@@ -12,6 +12,7 @@
   ansible.builtin.raw: groups {{ id_user.stdout_lines[0] }} | grep sudo
   register: insudogrp
   ignore_errors: true
+  tags: sudo_removal
 
 - name: Pause if user is not in sudo group
   ansible.builtin.pause:
@@ -19,6 +20,11 @@
       "You are not in the sudo group. Please add yourself
        to the sudo group on the remote and press enter to continue."
   when: insudogrp.failed is true
+  tags: sudo_removal
+
+- meta: reset_connection
+  when: insudogrp.failed is true
+  tags: sudo_removal
 
 - name: Check if python is installed
   ansible.builtin.raw: which python
@@ -35,24 +41,31 @@
   register: install_output
   when: pyexists.rc != 0
 
-# - name: Remove user from sudo group
-#   ansible.builtin.raw: "sudo gpasswd -d {{ ansible_user }} sudo"
-#   when: insudogrp.failed is false
-#   ignore_errors: true
+- name: Check if user is in sudo group
+  ansible.builtin.raw: groups {{ id_user.stdout_lines[0] }} | grep sudo
+  register: insudogrp
+  ignore_errors: true
+  tags: sudo_removal
+
+- name: Remove user from sudo group
+  ansible.builtin.raw: "sudo gpasswd -d {{ ansible_user }} sudo"
+  when: insudogrp.failed is false
+  ignore_errors: true
+  register: sudo_user_removed
+  tags: sudo_removal
 
 - name: Check for reboot
   ansible.builtin.raw: rpm-ostree db diff
   register: reboot_check
 
-- debug:
-    var: reboot_check
-
 - name: Reboot if necessary
   ansible.builtin.raw: sudo systemd-run --on-active=5 shutdown -r now
-  when: reboot_check.stdout.find('pending') != -1
+  when: >
+    (sudo_user_removed is defined and sudo_user_removed.changed != -1)
+    or (reboot_check.stdout.find('pending') != -1)
   register: reboot
 
 - name: Wait for ssh to be available
   ansible.builtin.wait_for_connection:
-    delay: 20
+    delay: 120
   when: reboot.skipped is not true and reboot.failed is false

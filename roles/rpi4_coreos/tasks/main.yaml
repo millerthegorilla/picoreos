@@ -1,15 +1,14 @@
-- debug:
-    var: rpi4_coreos_provision_disk
-
 - name: Get local packages for later conditional test for coreos-installer
   ansible.builtin.package_facts:
     manager: auto
   register: local_pkgs
   notify: "cleanup_handler"
+
 - name: Set pkg fact
   ansible.builtin.set_fact:
     local_pkgs: "{{ local_pkgs }}"
     cacheable: true
+
   # cleanup temp files etc
 - name: Cleanup before beginning
   ansible.builtin.command:
@@ -18,19 +17,28 @@
   notify: "cleanup_handler"
 - name: Flush handlers
   ansible.builtin.meta: flush_handlers
+
   # templates
 - name: Complete templates
   ansible.builtin.include_tasks:
     file: templating.yaml
+
   # Provision the microsd card and setup the machine
 - name: Provision machine
   ansible.builtin.import_tasks: provision.yaml
+
+- name: Remove picoreos_hosts from known_hosts
+  ansible.builtin.known_hosts:
+    name: "{{ item }}"
+    state: absent
+  loop: "{{ groups['picoreos_hosts'] }}"
+
 - name: Message user to remove microsd card and power up
   ansible.builtin.pause:
     prompt: |
       Microsd should be ready, resize root partition
       and/or place microsd in pi and boot.  Takes
-      about 4.5 minutes to boot.  P
+      about 4.5 minutes to boot.
       Press enter to continue.
     echo: false
   notify: cleanup_handler

@@ -1,4 +1,5 @@
 {
     "python.terminal.activateEnvInCurrentTerminal": true,
-    "ansible.python.interpreterPath": "/var/home/james/src/motioncore/.picoreos_venv/bin/python"
+    "ansible.validation.lint.path": "~/src/picoreos/.venv/bin/ansible-lint",
+    "ansible.ansible.path": "~/src/picoreos/.venv/bin/ansible"
 }
