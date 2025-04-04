@@ -26,7 +26,7 @@
   when: insudogrp.failed is true
   tags: sudo_removal
 
-- name: Check if python is installed
+- name: Check if python is installed - ignore failure
   ansible.builtin.raw: which python
   register: pyexists
   ignore_errors: true
@@ -47,8 +47,6 @@
   ignore_errors: true
   tags: sudo_removal
 
-- debug: var=insudogrp
-
 - name: Remove user from sudo group
   ansible.builtin.raw: "sudo gpasswd -d {{ ansible_user }} sudo"
   when: insudogrp.failed is false
@@ -59,8 +57,6 @@
 - name: Check for reboot
   ansible.builtin.raw: rpm-ostree db diff
   register: reboot_check
-
-- debug: var=reboot_check
 
 - name: Reboot if necessary
   ansible.builtin.raw: sudo systemd-run --on-active=5 shutdown -r now

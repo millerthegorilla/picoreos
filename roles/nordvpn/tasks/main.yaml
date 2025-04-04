@@ -10,20 +10,14 @@
   register: openvpn_installed
   when: '"openvpn" not in ansible_facts.packages'
 
-- name: Add openvpn group
-  ansible.builtin.group:
-    name: openvpn
-    state: present
-  register: openvpn_group_out
-
-- name: Reboot
+- name: Reboot if necessary
   ansible.builtin.reboot:
     msg: "Rebooting to install packages"
     pre_reboot_delay: 0
     post_reboot_delay: 30
   when: >-
-      (openvpn_installed.skipped != true and openvpn_installed.needs_reboot == true)
-      or openvpn_group_out.changed == true
+      openvpn_installed.needs_reboot is defined
+      and openvpn_installed.needs_reboot
 
 - name: Complete templates
   ansible.builtin.import_tasks: templating.yaml

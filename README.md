@@ -2,12 +2,14 @@
 
 This repository provides a set of ansible roles to provision a coreos rpi4 server, on a raspberry pi 4b, and, to some extent, harden it a little.
 
+The firmware is provided by https://github.com/pftf/RPi4/releases and coreos-installer installs coreos.
+
 To get started you will need to create a playbook that calls the roles.  An example playbook is included as picoreos_pb.yaml
 
 ## roles
 The following roles are run for a complete install:
 &nbsp;&nbsp;
-- rpi4_coreos&emsp;&emsp;&emsp;&emsp;&emsp;uses coreos-installer to install the latest firmware and the coreos fedora version that you define as 'fedora_version'
+- rpi4_coreos&emsp;&emsp;&emsp;&emsp;&emsp;uses latest https://github.com/pftf/RPi4/release to install the latest firmware and coreos-installer to install the coreos fedora version that you define as 'fedora_version'
 - req_install&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;installs the packages that are required for ansible to work on coreos
 - devsec_os_hardening&emsp;a modified fork of [devsec_os_hardening](#devsec_hardening)
 - devsec_ssh_hardening&emsp;a modified fork of [devsec_ssh_hardening](#devsec_hardening)
@@ -19,21 +21,17 @@ The following roles are run for a complete install:
 
 The rpi4_coreos role is a <b>destructive operation</b> and will overwrite anything that is on the target disk.
 
-You will need to put the microssd card into a slot on your machine, and then define which disk name it is in the
-playbook as the variable to the rpi4_coreos role.  The rpi4_coreos role will run to install the latest coreos and
-firmware and will then prompt you to remove the ssd card and place it in your raspberry pi, and boot up.
-As soon as the pi has finished booting, which you can confirm with ```ssh core@picoreos.lan```, you can press
-enter to continue.  All roles/tasks from then on will run automatically, unless the script detects that you
-need to adjust sudo settings on the remote.
+You will need to put the microssd card into a slot on your machine, and then define which disk name it is in the playbook as the variable to the rpi4_coreos role.  The rpi4_coreos role will run to install the latest coreos and firmware and will then prompt you to remove the ssd card and place it in your raspberry pi, and boot up.
 
-There are a few reboots during the process of installation and these take some time, as coreos on the pi4b takes about
-4 minutes to reboot.
+As soon as the pi has finished booting, which you can confirm with ```ssh core@picoreos.lan```, you can press enter to continue.  All roles/tasks from then on will run automatically, unless the script detects that you need to adjust sudo settings on the remote.
+
+There are a few reboots during the process of installation and these take some time, as coreos on the pi4b takes about 4 minutes to reboot.
+
+## if interrupted
+If the ansible script is interrupted for some reason and you then rerun, be aware that the previous run may have installed something that then gets picked up earlier in the script as a reboot.
 
 ## tested against
 This repo has only been tested against a rpi4b with 8Gb of ram.
-
-## license
-  mit license
 
 ## dependencies
   create a new python virtual environment and install ansible, python3-rpm on the host and pip install rpm in the prefix.
@@ -52,6 +50,9 @@ This repo has only been tested against a rpi4b with 8Gb of ram.
   You can layer/install coreos-installer and ansible will use it.  If it doesn't find it, it uses a version inside a container instead.
 
 ## configuration
+
+### butane
+You can find the butane template in roles/rpi4_coreos/templates/.  Coreos has an immutable file system and so currently /var is mounted within a luks encrypted partition.  If you want to unlock this partition on another machine you will need to define an encryption key in the butane configuration.
 
 ### variables
   You will need to add some variables to call the roles
@@ -154,15 +155,6 @@ devsec_os_hardening   allows you to skip devsec.os_hardening
 devsec_ssh_hardening  allows you to skip devsec.ssh_hardening
 nordvpn               allows you to skip the nordvpn role
 ```
-The collection of roles require the raspberry pi to reboot several times. You can prevent the reboots
-using the following tags:
-```
-reboot                skips reboots everywhere except the nordvpn role which requires a reboot in order to
-                         start the service, and comes last.
-reboot_rpi4           skips reboots in rpi4_coreos role
-reboot_req            skips reboots in req_install
-```
-These tags are mostly useful if you are running the roles a second time, having interrupted the script halfway through and you don't want the first or second reboot task to reboot.
 
 ## devsec_hardening
 Picoreos ansible scripts use a modified version of [devsec/ansible-collection-hardening](https://github.com/dev-sec/ansible-collection-hardening) - os_hardening and ssh_hardening.
@@ -195,7 +187,15 @@ Host picoreos
   IdentitiesOnly yes
 ```
 
-# disclaimer
+## raspberry pi 4b memory limit
+If you are using a raspberry pi4b with 4Gb or more, then you will want to attach a keyboard and go to the settings of the pi firmware when it boots, and then go to rapberry pi -> advanced -> remove 3Gb limit.
+
+<b>*Do not*</b> do this until after the first successful boot to completion or the ignition configuration will not have set up coreos and the boot and subsequent boots will fail.
+
+## disclaimer
 
 This repo and the code within are provided as is.  I am not responsible for any problems that arise as
 a consequence of using it.  If you have a problem then consider opening an issue.
+
+## license
+  mit license

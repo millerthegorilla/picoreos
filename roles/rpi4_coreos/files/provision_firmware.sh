@@ -18,5 +18,5 @@ popd
 if is_mounted /tmp/FCOSEFIpart; then
     sudo umount /tmp/FCOSEFIpart
 fi
-find /tmp/ -name "coreos-installer*" -maxdepth 1 -type d -exec sudo rm -rf {} +
+find /tmp/ -maxdepth 1 -type d -name "coreos-installer*" -exec sudo rm -rf {} +
 [[ -d /tmp/FCOSEFIpart ]] && sudo rm -rf /tmp/FCOSEFIpart

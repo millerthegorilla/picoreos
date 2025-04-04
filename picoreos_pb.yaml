@@ -10,7 +10,8 @@
       rpi4_coreos_provision_disk: "sdb"
       rpi4_coreos_ssh_path: '~/.ssh/id_ed25519.pub'
       when: "(rpi4_coreos_provision_disk in ansible_devices) | bool"
-- name: Provision CoreOS on Raspberry Pi 4
+      tags: rpi4_coreos
+- name: Install required packages
   hosts: picoreos_hosts
   gather_facts: false
   remote_user: core
@@ -22,6 +23,7 @@
     - role: req_install
       vars:
         fedora_version: 41
+      tags: req_install
 - name: Harden server
   hosts: picoreos_hosts
   become: true
