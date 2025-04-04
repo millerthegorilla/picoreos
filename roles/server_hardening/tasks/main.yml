@@ -1,3 +1,38 @@
 #SPDX-License-Identifier: MIT-0
 ---
 # tasks file for server_hardening
+#   post_tasks:
+#     - name: Remove python
+#       become: true
+#       become_user: root
+#       community.general.rpm_ostree_pkg:
+#         name: "{{ ansible_required_packages }}"
+#         state: absent
+#     - name: Check if user is in sudo group
+#       ansible.builtin.raw: groups {{ ansible_ssh_user }} | grep sudo
+#       register: insudogrp
+#       ignore_errors: true
+#     # - name: Remove user from sudo group
+#     #   ansible.builtin.raw: "sudo gpasswd -d {{ ansible_become_user }} sudo"
+#     #   when: insudogrp.failed is false
+#             # - name: Set motion_user shell
+#             #   become: true
+#             #   become_user: root
+#             #   ansible.builtin.shell:
+#             #     cmd: sudo usermod motion_user -s /sbin/nologin
+#             #   delegate_to: "{{ get_set_ip_remote_ip }}"
+#             # - name: Reboot remote and wait for it to restart
+#             #   become: true
+#             #   become_user: root
+#             #   ansible.builtin.reboot:
+#             #     msg: "Reboot initiated by Ansible"
+#             #     connect_timeout: 5
+#             #     reboot_timeout: 600
+#             #     pre_reboot_delay: 0
+#             #     post_reboot_delay: 5
+#             #     test_command: whoami
+#             #   delegate_to: "{{ get_set_ip_remote_ip }}"
+
+#         # # set get_set_ip_remote_ip in vars/main.yaml and run following command for non interactive run
+#         # # if you know what the ip address will be and want to avoid ssh_known check (insecure!)
+#         # # ansible-playbook "{{ hostvars['localhost']['get_set_ip_remote_ip'] }}"_pb.yaml --ask-become-pass --ssh-common-args='-o StrictHostKeyChecking=no'

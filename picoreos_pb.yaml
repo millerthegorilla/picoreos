@@ -28,7 +28,7 @@
   gather_facts: true
   roles:
     - role: devsec.hardening.os_hardening
-      tags: [ devsec, devsec_os_hardening ]
+      tags: [devsec, devsec_os_hardening]
       vars:
         os_auditd_enabled: false
         os_immutable_fs: true
@@ -69,7 +69,7 @@
           - 'systemd-oom'
           - 'usbmuxd'
     - role: devsec.hardening.ssh_hardening
-      tags: [ devsec, devsec_ssh_hardening ]
+      tags: [devsec, devsec_ssh_hardening]
       vars:
         ssh_immutable_fs: true
         ssh_authorized_keys_file: '.ssh/authorized_keys.d/ignition'
@@ -95,38 +95,3 @@
           36656432646638313565333132633239353130653838306165356237623666373838386564636532
           3264383162393332310a343731393334306630353932643330363261316465356636613263616437
           63333964333564353639376131376637613261383239343832356364663165663163
-#   post_tasks:
-#     - name: Remove python
-#       become: true
-#       become_user: root
-#       community.general.rpm_ostree_pkg:
-#         name: "{{ ansible_required_packages }}"
-#         state: absent
-#     - name: Check if user is in sudo group
-#       ansible.builtin.raw: groups {{ ansible_ssh_user }} | grep sudo
-#       register: insudogrp
-#       ignore_errors: true
-#     # - name: Remove user from sudo group
-#     #   ansible.builtin.raw: "sudo gpasswd -d {{ ansible_become_user }} sudo"
-#     #   when: insudogrp.failed is false
-#             # - name: Set motion_user shell
-#             #   become: true
-#             #   become_user: root
-#             #   ansible.builtin.shell:
-#             #     cmd: sudo usermod motion_user -s /sbin/nologin
-#             #   delegate_to: "{{ get_set_ip_remote_ip }}"
-#             # - name: Reboot remote and wait for it to restart
-#             #   become: true
-#             #   become_user: root
-#             #   ansible.builtin.reboot:
-#             #     msg: "Reboot initiated by Ansible"
-#             #     connect_timeout: 5
-#             #     reboot_timeout: 600
-#             #     pre_reboot_delay: 0
-#             #     post_reboot_delay: 5
-#             #     test_command: whoami
-#             #   delegate_to: "{{ get_set_ip_remote_ip }}"
-
-#         # # set get_set_ip_remote_ip in vars/main.yaml and run following command for non interactive run
-#         # # if you know what the ip address will be and want to avoid ssh_known check (insecure!)
-#         # # ansible-playbook "{{ hostvars['localhost']['get_set_ip_remote_ip'] }}"_pb.yaml --ask-become-pass --ssh-common-args='-o StrictHostKeyChecking=no'

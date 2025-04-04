@@ -154,14 +154,15 @@ devsec_os_hardening   allows you to skip devsec.os_hardening
 devsec_ssh_hardening  allows you to skip devsec.ssh_hardening
 nordvpn               allows you to skip the nordvpn role
 ```
-The collection of roles require the raspberry pi to reboot several times.  You can prevent the reboots
+The collection of roles require the raspberry pi to reboot several times. You can prevent the reboots
 using the following tags:
 ```
 reboot                skips reboots everywhere except the nordvpn role which requires a reboot in order to
-                         start the service.
+                         start the service, and comes last.
 reboot_rpi4           skips reboots in rpi4_coreos role
 reboot_req            skips reboots in req_install
 ```
+These tags are mostly useful if you are running the roles a second time, having interrupted the script halfway through and you don't want the first or second reboot task to reboot.
 
 ## devsec_hardening
 Picoreos ansible scripts use a modified version of [devsec/ansible-collection-hardening](https://github.com/dev-sec/ansible-collection-hardening) - os_hardening and ssh_hardening.
