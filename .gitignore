@@ -5,7 +5,7 @@ templated/*
 .env
 .env/*
 roles/nordvpn/files/openvpn/auth.txt
-inventory/picoreos.yaml
+inventory/picoreos.yml
 .vscode/*
 .vscode
 .ansible/*

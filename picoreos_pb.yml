@@ -1,24 +1,18 @@
 - name: Provision CoreOS on Raspberry Pi 4
-  hosts: localhost
-  gather_facts: true
-  pre_tasks:
-    - name: Include vars
-      ansible.builtin.include_vars:
-        file: ./roles/rpi4_coreos/vars/main.yaml
+  hosts: picoreos_hosts
+  connection: local
+  serial: 1
   roles:
     - role: rpi4_coreos
-      rpi4_coreos_provision_disk: "sdb"
-      rpi4_coreos_ssh_path: '~/.ssh/id_ed25519.pub'
+      vars:
+        rpi4_coreos_provision_disk: "sdb"
+        rpi4_coreos_ssh_path: '~/.ssh/id_ed25519.pub'
       when: "(rpi4_coreos_provision_disk in ansible_devices) | bool"
+      delegate_to: localhost
       tags: rpi4_coreos
 - name: Install required packages
   hosts: picoreos_hosts
-  gather_facts: false
-  remote_user: core
-  pre_tasks:
-    - name: Include vars
-      ansible.builtin.include_vars:
-        file: ./roles/rpi4_coreos/vars/main.yaml
+ # gather_facts: true
   roles:
     - role: req_install
       vars:
@@ -27,49 +21,13 @@
 - name: Harden server
   hosts: picoreos_hosts
   become: true
-  gather_facts: true
+  gather_facts: false
   roles:
     - role: devsec.hardening.os_hardening
       tags: [devsec, devsec_os_hardening]
       vars:
         os_auditd_enabled: false
         os_immutable_fs: true
-        os_ignore_users:
-          - os_ignore_users
-          - 'adm'
-          - 'avahi-autoipd'
-          - 'bin'
-          - 'ceph'
-          - 'chrony'
-          - 'cockpit-ws'
-          - 'daemon'
-          - 'dbus'
-          - 'dockerroot'
-          - 'etcd'
-          - 'ftp'
-          - 'games'
-          - 'kube'
-          - 'lp'
-          - 'mail'
-          - 'nobody'
-          - 'operator'
-          - 'polkitd'
-          - 'rpc'
-          - 'rpcuser'
-          - 'sshd'
-          - 'sssd'
-          - 'systemd-bus-proxy'
-          - 'systemd-network'
-          - 'systemd-resolve'
-          - 'systemd-timesync'
-          - 'tcpdump'
-          - 'tss'
-          - 'clevis'
-          - 'dnsmasq'
-          - 'zincati'
-          - 'systemd-coredump'
-          - 'systemd-oom'
-          - 'usbmuxd'
     - role: devsec.hardening.ssh_hardening
       tags: [devsec, devsec_ssh_hardening]
       vars:
@@ -77,7 +35,7 @@
         ssh_authorized_keys_file: '.ssh/authorized_keys.d/ignition'
 - name: Add VPN
   hosts: picoreos_hosts
-  gather_facts: true
+  gather_facts: false
   become: true
   roles:
     - role: nordvpn

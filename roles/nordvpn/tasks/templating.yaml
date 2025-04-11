@@ -1,8 +1,0 @@
-- name: Create file template
-  ansible.builtin.template:
-    src: "{{ role_path }}/templates/auth.txt.j2"
-    dest: "{{ role_path }}/files/openvpn/auth.txt"
-    owner: "{{ lookup('env', 'USER') }}"
-    group: "{{ lookup('env', 'USER') }}"
-    mode: '0400'
-  delegate_to: localhost

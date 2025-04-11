@@ -1,0 +1,10 @@
+- name: Create file template
+  ansible.builtin.template:
+    src: "{{ role_path }}/templates/auth.txt.j2"
+    dest: "/etc/openvpn/auth.txt"
+    owner: root
+    group: openvpn
+    mode: '0400'
+    seuser: system_u
+    setype: openvpn_etc_t
+    serole: object_r

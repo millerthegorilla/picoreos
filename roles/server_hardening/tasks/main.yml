@@ -33,6 +33,6 @@
 #             #     test_command: whoami
 #             #   delegate_to: "{{ get_set_ip_remote_ip }}"
 
-#         # # set get_set_ip_remote_ip in vars/main.yaml and run following command for non interactive run
+#         # # set get_set_ip_remote_ip in vars/main.yml and run following command for non interactive run
 #         # # if you know what the ip address will be and want to avoid ssh_known check (insecure!)
-#         # # ansible-playbook "{{ hostvars['localhost']['get_set_ip_remote_ip'] }}"_pb.yaml --ask-become-pass --ssh-common-args='-o StrictHostKeyChecking=no'
+#         # # ansible-playbook "{{ hostvars['localhost']['get_set_ip_remote_ip'] }}"_pb.yml --ask-become-pass --ssh-common-args='-o StrictHostKeyChecking=no'

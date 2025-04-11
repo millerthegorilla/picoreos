@@ -1,11 +1,11 @@
   # use FCCT to transpile config.bu to config.ign
 - name: Transpile to config.ign
-  ansible.builtin.import_tasks: provision/01_transpile.yaml
+  ansible.builtin.import_tasks: provision/01_transpile.yml
   # run script to install coreos to microsd card
   # if coreos-installer is installed (fedora only)
 - name: Install to microsd if coreos-installer is present
   ansible.builtin.include_tasks:
-    file: provision/02_01_image_ssd.yaml
+    file: provision/02_01_image_ssd.yml
     apply:
       become: true
       become_method: ansible.builtin.sudo
@@ -15,7 +15,7 @@
   # (uses privilged podman container)
 - name: Install to microsd if coreos-installer is not present
   ansible.builtin.include_tasks:
-    file: provision/02_02_image_ssd.yaml
+    file: provision/02_02_image_ssd.yml
     apply:
       become: true
       become_method: ansible.builtin.sudo
@@ -23,7 +23,7 @@
   # install firmware to microsd card
 - name: Install firmware
   ansible.builtin.include_tasks:
-    file: provision/03_install_firmware.yaml
+    file: provision/03_install_firmware.yml
     apply:
       become: true
       become_method: ansible.builtin.sudo

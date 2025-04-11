@@ -4,7 +4,7 @@ This repository provides a set of ansible roles to provision a coreos rpi4 serve
 
 The firmware is provided by https://github.com/pftf/RPi4/releases and coreos-installer installs coreos.
 
-To get started you will need to create a playbook that calls the roles.  An example playbook is included as picoreos_pb.yaml
+To get started you will need to create a playbook that calls the roles.  An example playbook is included as picoreos_pb.yml
 
 ## roles
 The following roles are run for a complete install:
@@ -145,7 +145,7 @@ moan about lack of sudo access.  This is because the remote_user is removed from
 early as possible.  You may get prompted to ssh in to the remote and add the user to the ssh group.
 You can skip the removal of the user from the sudo group to prevent this using the following:
 ```
-ansible-playbook -i inventory --ask-vault-password --skip-tags sudo_removal ./picoreos_pb.yaml
+ansible-playbook -i inventory --ask-vault-password --skip-tags sudo_removal ./picoreos_pb.yml
 ```
 Each of the secondary roles has a tag which allows you to skip those roles if you want.  Available
 role tags are:
@@ -170,7 +170,7 @@ Ansible connects via hostname to the remote.  If the host already exists in the 
 the control node, then ssh will complain.  You can either remove the host from known_hosts manually,
 or delete the file, or add the following to your command line:
 ```
-ansible-playbook -i inventory --ask-vault-pass --ssh-common-args='-o StrictHostKeyChecking=no' ./picoreos_pb.yaml
+ansible-playbook -i inventory --ask-vault-pass --ssh-common-args='-o StrictHostKeyChecking=no' ./picoreos_pb.yml
 ```
 although it is not recommended to do so, as the stricthostkeychecking guards against man in the middle attacks.
 

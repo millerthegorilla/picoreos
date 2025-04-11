@@ -21,11 +21,11 @@
   # templates
 - name: Complete templates
   ansible.builtin.include_tasks:
-    file: templating.yaml
+    file: templating.yml
 
   # Provision the microsd card and setup the machine
 - name: Provision machine
-  ansible.builtin.import_tasks: provision.yaml
+  ansible.builtin.import_tasks: provision.yml
 
 - name: Remove picoreos_hosts from known_hosts
   ansible.builtin.known_hosts:
