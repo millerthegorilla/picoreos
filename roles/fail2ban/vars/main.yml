@@ -1,0 +1,9 @@
+#SPDX-License-Identifier: MIT-0
+---
+# vars file for fail2ban
+# fail2ban/vars/main.yml
+
+fail2ban_enabled: true
+fail2ban_bantime: 10m
+fail2ban_findtime: 10m
+fail2ban_maxretry: 3

@@ -1,0 +1,33 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for fail2ban
+# fail2ban/tasks/main.yml
+- name: Gather package facts
+  ansible.builtin.package_facts:
+
+- name: Install fail2ban package
+  community.general.rpm_ostree_pkg:
+    name: fail2ban
+    state: present
+  register: fail2ban_installed
+  when: '"fail2ban" not in ansible_facts.packages'
+
+- name: Reboot if necessary
+  ansible.builtin.reboot:
+    msg: "Rebooting to install packages"
+    pre_reboot_delay: 0
+    post_reboot_delay: 30
+  when: >-
+      (fail2ban_installed.needs_reboot is defined
+      and fail2ban_installed.needs_reboot)
+      or "fail2ban" not in ansible_facts.packages
+
+- debug: var=ansible_facts.packages['zstd']
+
+- name: Configure fail2ban
+  template:
+    src: jail.local.j2
+    dest: /etc/fail2ban/jail.local
+  notify:
+    - Restart fail2ban service
+  changed_when: true
