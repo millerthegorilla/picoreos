@@ -1,0 +1,24 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for ssh_config
+- name: Move existing file when exists
+  ansible.builtin.copy:
+    src: "{{ ssh_config_out_path }}/config"
+    dest: "{{ ssh_config_out_path }}/config.old"
+    remote_src: false
+
+- name: Template fragments by hostname
+  ansible.builtin.template:
+    src: ssh_config.j2
+    dest: "{{ role_path }}/files/config_{{ inventory_hostname }}"
+
+- name: Assemble files
+  ansible.builtin.assemble:
+    src: "{{ role_path }}/files"
+    dest: "{{ ssh_config_out_path }}/config"
+    remote_src: false
+    seuser: unconfined_u
+    setype: ssh_home_t
+    serole: object_r
+  notify: cleanup_handler
+  changed_when: true

@@ -22,8 +22,6 @@
       and fail2ban_installed.needs_reboot)
       or "fail2ban" not in ansible_facts.packages
 
-- debug: var=ansible_facts.packages['zstd']
-
 - name: Configure fail2ban
   template:
     src: jail.local.j2

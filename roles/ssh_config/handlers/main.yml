@@ -1,0 +1,10 @@
+#SPDX-License-Identifier: MIT-0
+---
+# handlers file for ssh_config
+- name: Remove templated files
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop: "{{ query('fileglob', 'files/*') }}"
+  listen: "cleanup_handler"
+  delegate_to: localhost

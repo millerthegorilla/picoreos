@@ -1,3 +1,14 @@
+- name: Create .ssh/config
+  hosts: all:!localhosts
+  connection: local
+  roles:
+    - role: ssh_config
+      vars:
+        ssh_config_out_path: "~/.ssh"
+        ssh_config_key_type: "ssh-ed25519"
+        ssh_config_coreos_ssh_path: "{{ ssh_config_out_path }}/{{ ssh_config_key_type }}.pub"
+  tags: "ssh_config"
+
 - name: Provision CoreOS on Raspberry Pi 4
   hosts: picoreos_hosts
   connection: local
@@ -12,7 +23,7 @@
       tags: rpi4_coreos
 - name: Install required packages
   hosts: picoreos_hosts
- # gather_facts: true
+  gather_facts: false
   roles:
     - role: req_install
       vars:
@@ -55,3 +66,10 @@
           36656432646638313565333132633239353130653838306165356237623666373838386564636532
           3264383162393332310a343731393334306630353932643330363261316465356636613263616437
           63333964333564353639376131376637613261383239343832356364663165663163
+- name: Fail2ban
+  hosts: picoreos_hosts
+  gather_facts: false
+  become: true
+  roles:
+    - role: fail2ban
+      tags: fail2ban
